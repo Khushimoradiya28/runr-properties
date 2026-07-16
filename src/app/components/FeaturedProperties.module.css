@@ -1,0 +1,204 @@
+.featuredSection {
+  width: calc(100vw - 300px);
+  max-width: calc(100vw - 300px);
+  margin: 0 auto 64px;
+  padding: 0;
+}
+
+.featuredHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.sectionTitle {
+  margin: 0;
+}
+
+.viewAll {
+  color: #1e3a5f;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.sliderControls {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.sliderButton {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid rgba(30, 58, 95, 0.14);
+  background: #ffffff;
+  color: #1e3a5f;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 10px 20px rgba(30, 58, 95, 0.08);
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.sliderButton:hover:not(:disabled) {
+  transform: translateX(-2px);
+}
+
+.sliderButton:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.featuredGrid {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  scroll-snap-type: none;
+  padding-bottom: 12px;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.featuredGrid::-webkit-scrollbar {
+  display: none;
+}
+
+.propertyCard {
+  background: #ffffff;
+  border: 1px solid rgba(30, 58, 95, 0.12);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 24px 55px rgba(30, 58, 95, 0.08);
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 25%;
+  max-width: 360px;
+  scroll-snap-align: start;
+}
+
+.cardImage {
+  height: 260px;
+  background-color: #f3f6fb;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.cardBody {
+  padding: 20px 22px 20px;
+  display: block;
+}
+
+.cardTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.cardTitle {
+  margin: 0;
+}
+
+.cardAction {
+  border: none;
+  background: rgba(255,255,255,0.8);
+  color: #1e3a5f;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.cardLocation {
+  margin: 0 0 18px;
+  font-size: 0.88rem;
+  color: #6b7280;
+}
+
+.cardFooter {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.cardPrice {
+  font-weight: 700;
+  color: #1e3a5f;
+}
+
+.cardSize {
+  color: #6b7280;
+  font-size: 0.88rem;
+}
+
+@media (max-width: 1200px) {
+  .featuredSection {
+    width: calc(100vw - 64px);
+    max-width: calc(100vw - 64px);
+  }
+}
+
+@media (max-width: 1024px) {
+  .featuredGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .featuredGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Overlay favorite button styles */
+.propertyCard { position: relative; }
+.cardImage { position: relative; }
+
+.cardActionOverlay {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #ffffff80;
+  border: 1px solid rgba(30,58,95,0.08);
+  color: #1e3a5f;
+  font-size: 1.35rem;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(30,58,95,0.08);
+  z-index: 5;
+  transition: transform 0.12s ease, color 0.12s ease, background-color 0.12s ease;
+}
+
+.cardActionOverlay:hover { transform: translateY(-2px) scale(1.02); }
+
+.cardActionOverlay.liked {
+  /* keep the button background subtle; change the heart color (fill) instead */
+  background: rgba(255,255,255,0.95);
+  color: #e0245e; /* heart fill color when liked */
+  border-color: rgba(226,36,94,0.08);
+  transform: translateY(-2px) scale(1.04);
+}
+
+/* SVG sizing + visible outline for white stroke */
+.cardActionOverlay svg {
+  width: 24px;
+  height: 24px;
+  display: block;
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,0.18));
+}
+
+.cardActionOverlay svg path {
+  transition: fill 120ms ease, stroke 120ms ease, transform 120ms ease;
+}
+

@@ -42,6 +42,48 @@ a {
   text-decoration: none;
 }
 
+h1 {
+  font-size: clamp(2.4rem, 3.2vw, 3rem);
+  font-weight: 800;
+  line-height: 1.05;
+  color: #10203b;
+  letter-spacing: -0.03em;
+}
+
+h2 {
+  font-size: clamp(1.75rem, 2.2vw, 2rem);
+  font-weight: 800;
+  line-height: 1.15;
+  color: #10203b;
+  letter-spacing: -0.02em;
+}
+
+h3 {
+  font-size: clamp(1rem, 1.15vw, 1.1rem);
+  font-weight: 700;
+  line-height: 1.35;
+  color: #10203b;
+}
+
+h4 {
+  font-size: clamp(0.95rem, 1.05vw, 1.05rem);
+  font-weight: 500;
+  line-height: 1.65;
+  color: #3f5a7d;
+}
+
+@media (max-width: 1024px) {
+  h1 {
+    font-size: 2.4rem;
+  }
+}
+
+@media (max-width: 640px) {
+  h1 {
+    font-size: 2rem;
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;

@@ -1,0 +1,135 @@
+:root {
+  --bg: #ffffff;
+  --nav-deep: #1E3A5F; /* deep navy */
+  --accent: #3FA66B; /* emerald green */
+  --muted: #F8F9FB; /* light gray */
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 60;
+  width: 100%;
+  background: var(--bg);
+  border-bottom: 1px solid rgba(30,58,95,0.06);
+  box-shadow: 0 6px 18px rgba(30,58,95,0.04);
+}
+
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  height: 76px;
+  padding: 0 28px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 18px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--nav-deep);
+  text-decoration: none;
+}
+
+.logoMark {
+  width: 46px;
+  height: 46px;
+  color: var(--nav-deep);
+}
+
+.brandText {
+  display: flex;
+  flex-direction: column;
+  line-height: 1;
+  gap: 3px;
+}
+
+.brandName {
+  font-size: 1.42rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: var(--nav-deep);
+}
+
+.brandTag {
+  font-size: 0.58rem;
+  color: var(--nav-deep);
+  font-weight: 700;
+  letter-spacing: 0.28em;
+  opacity: 0.82;
+}
+
+.nav {
+  display: flex;
+  gap: 22px;
+  align-items: center;
+  justify-self: center;
+}
+
+.navLink {
+  color: var(--nav-deep);
+  padding: 8px 12px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: background 160ms ease, transform 160ms ease, color 160ms ease;
+}
+
+.navLink:hover,
+.navLink:focus-visible {
+  background: var(--muted);
+  color: var(--nav-deep);
+  transform: translateY(-2px);
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-self: end;
+}
+
+.iconButton {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: transparent;
+  color: var(--nav-deep);
+  border: 1px solid rgba(30,58,95,0.06);
+  transition: background 140ms ease, transform 140ms ease, box-shadow 140ms ease;
+}
+
+.iconButton:hover,
+.iconButton:focus-visible {
+  background: var(--muted);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(30,58,95,0.05);
+}
+
+.iconButton svg { width: 18px; height: 18px; }
+
+.ctaButton {
+  padding: 10px 16px;
+  border-radius: 16px;
+  background: var(--nav-deep);
+  color: #fff;
+  font-weight: 700;
+  box-shadow: 0 12px 30px rgba(30,58,95,0.12);
+  transition: transform 160ms ease, background 160ms ease;
+}
+
+.ctaButton:hover,
+.ctaButton:focus-visible {
+  transform: translateY(-2px);
+  background: #16304b;
+}
+
+@media (max-width: 880px) {
+  .nav { display: none; }
+  .container { padding: 0 18px; grid-template-columns: auto 1fr auto }
+}
