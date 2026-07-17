@@ -82,6 +82,7 @@
 }
 
 .cardImage {
+  /* Recommended property image size: 400×280px */
   height: 260px;
   background-color: #f3f6fb;
   background-size: cover;
@@ -150,22 +151,92 @@
   font-size: 0.88rem;
 }
 
+/* ——————————————————————————————————
+   RESPONSIVE BREAKPOINTS
+   —————————————————————————————————— */
+
 @media (max-width: 1200px) {
   .featuredSection {
     width: calc(100vw - 64px);
     max-width: calc(100vw - 64px);
   }
-}
 
-@media (max-width: 1024px) {
-  .featuredGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .propertyCard {
+    flex: 0 0 30%;
+    max-width: 320px;
   }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 880px) {
+  .featuredSection {
+    width: calc(100vw - 40px);
+    max-width: calc(100vw - 40px);
+  }
+
+  .featuredHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .propertyCard {
+    flex: 0 0 42%;
+    max-width: 300px;
+  }
+
+  .cardImage {
+    height: 220px;
+  }
+
+  .sliderControls {
+    margin-bottom: 14px;
+  }
+}
+
+@media (max-width: 640px) {
+  .featuredSection {
+    width: calc(100vw - 24px);
+    max-width: calc(100vw - 24px);
+    margin: 0 auto 48px;
+  }
+
+  .propertyCard {
+    flex: 0 0 75%;
+    max-width: 280px;
+    border-radius: 18px;
+  }
+
+  .cardImage {
+    height: 200px;
+  }
+
+  .cardBody {
+    padding: 16px 18px 16px;
+  }
+
   .featuredGrid {
-    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .sliderButton {
+    width: 38px;
+    height: 38px;
+  }
+}
+
+@media (max-width: 400px) {
+  .featuredSection {
+    width: calc(100vw - 16px);
+    max-width: calc(100vw - 16px);
+  }
+
+  .propertyCard {
+    flex: 0 0 82%;
+    max-width: 260px;
+  }
+
+  .cardImage {
+    height: 180px;
   }
 }
 

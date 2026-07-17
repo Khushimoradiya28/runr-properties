@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useRef } from "react";
 import Link from "next/link";
 import styles from "./CityPortal.module.css";
 
@@ -11,6 +14,81 @@ const cities = [
 ];
 
 export default function CityPortal() {
+  const sliderRef = useRef(null);
+  const cardWidthRef = useRef(0);
+  const scrollTimeoutRef = useRef(null);
+
+  // Tripled items for infinite loop effect
+  const loopItems = [...cities, ...cities, ...cities];
+  const coreSectionStart = cities.length;
+
+  useEffect(() => {
+    const slider = sliderRef.current;
+    if (!slider) return;
+    const card = slider.querySelector(`.${styles.cityCard}`);
+    if (!card) return;
+
+    const gap = 18;
+    const cardWidth = card.offsetWidth + gap;
+    cardWidthRef.current = cardWidth;
+    slider.scrollLeft = cardWidth * coreSectionStart;
+  }, [coreSectionStart]);
+
+  useEffect(() => {
+    const slider = sliderRef.current;
+    if (!slider) return;
+
+    const normalizePosition = () => {
+      const cardWidth = cardWidthRef.current;
+      if (!cardWidth) return;
+      const min = cardWidth * 0.5;
+      const max = cardWidth * (coreSectionStart * 2) - cardWidth * 0.5;
+
+      if (slider.scrollLeft <= min) {
+        slider.scrollLeft += cardWidth * cities.length;
+      } else if (slider.scrollLeft >= max) {
+        slider.scrollLeft -= cardWidth * cities.length;
+      }
+    };
+
+    const onScroll = () => {
+      if (scrollTimeoutRef.current) {
+        window.clearTimeout(scrollTimeoutRef.current);
+      }
+      scrollTimeoutRef.current = window.setTimeout(normalizePosition, 80);
+    };
+
+    slider.addEventListener("scroll", onScroll);
+    return () => {
+      slider.removeEventListener("scroll", onScroll);
+      if (scrollTimeoutRef.current) window.clearTimeout(scrollTimeoutRef.current);
+    };
+  }, [coreSectionStart]);
+
+  const handlePrev = () => {
+    const slider = sliderRef.current;
+    if (!slider) return;
+    const card = slider.querySelector(`.${styles.cityCard}`);
+    if (card) {
+      const gap = parseFloat(getComputedStyle(slider).gap) || 18;
+      cardWidthRef.current = card.offsetWidth + gap;
+    }
+    const cardWidth = cardWidthRef.current || 180;
+    slider.scrollBy({ left: -cardWidth, behavior: "smooth" });
+  };
+
+  const handleNext = () => {
+    const slider = sliderRef.current;
+    if (!slider) return;
+    const card = slider.querySelector(`.${styles.cityCard}`);
+    if (card) {
+      const gap = parseFloat(getComputedStyle(slider).gap) || 18;
+      cardWidthRef.current = card.offsetWidth + gap;
+    }
+    const cardWidth = cardWidthRef.current || 180;
+    slider.scrollBy({ left: cardWidth, behavior: "smooth" });
+  };
+
   return (
     <section className={styles.citySection}>
       <div className={styles.cityHeader}>
@@ -18,11 +96,34 @@ export default function CityPortal() {
           <h2>Explore Properties in Top Cities</h2>
           <h4 className={styles.titleTagline}>Find listings by city, across Gujarat</h4>
         </div>
+
+        <div className={styles.sliderControls}>
+          <button
+            type="button"
+            className={styles.sliderButton}
+            onClick={handlePrev}
+            aria-label="Show previous cities"
+          >
+            ←
+          </button>
+          <button
+            type="button"
+            className={styles.sliderButton}
+            onClick={handleNext}
+            aria-label="Show next cities"
+          >
+            →
+          </button>
+        </div>
       </div>
 
-      <div className={styles.cityGrid}>
-        {cities.map((city) => (
-          <Link key={city.slug} href={`/city/${city.slug}`} className={styles.cityCard}>
+      <div ref={sliderRef} className={styles.citySlider} suppressHydrationWarning>
+        {loopItems.map((city, index) => (
+          <Link
+            key={`${city.slug}-${index}`}
+            href={`/city/${city.slug}`}
+            className={styles.cityCard}
+          >
             <div className={styles.cityIcon} aria-hidden="true">
               <img src={city.image} alt={city.name} className={styles.cityImage} />
             </div>

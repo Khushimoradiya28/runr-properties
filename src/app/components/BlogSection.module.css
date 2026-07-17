@@ -63,7 +63,9 @@
 .cardVisual {
   position: relative;
   width: 100%;
-  min-height: 180px;
+  /* Recommended blog image size: 400×240px */
+  height: 0;
+  padding-top: 60%; /* 240/400 = 60% aspect ratio */
   overflow: hidden;
   border-radius: 18px 18px 0 0;
   background: linear-gradient(180deg, #ecf7ef 0%, #f8fbf9 100%);
@@ -181,28 +183,104 @@
   }
 }
 
-@media (max-width: 720px) {
+@media (max-width: 880px) {
   .blogSection {
     width: calc(100vw - 40px);
-    padding: 20px 18px 24px;
+    max-width: calc(100vw - 40px);
+    padding: 22px 20px 26px;
+    border-radius: 18px;
+  }
+
+  .blogGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+
+  .callbackPanel {
+    padding: 18px 20px;
+    gap: 16px;
+  }
+
+  .callbackIcon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+  }
+
+  .callbackInfo {
+    gap: 16px;
+  }
+}
+
+@media (max-width: 720px) {
+  .blogSection {
+    width: calc(100vw - 24px);
+    max-width: calc(100vw - 24px);
+    padding: 20px 16px 22px;
+    border-radius: 16px;
   }
 
   .blogHeader {
     flex-direction: column;
     align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 20px;
   }
 
   .blogGrid {
     grid-template-columns: 1fr;
+    gap: 14px;
+  }
+
+  .cardVisual {
+    min-height: 160px;
+  }
+
+  .cardContent {
+    padding: 16px 18px 18px;
   }
 
   .callbackPanel {
     grid-template-columns: 1fr;
-    padding: 20px;
+    padding: 18px 16px;
+    gap: 14px;
+    border-radius: 14px;
+  }
+
+  .callbackInfo {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
   }
 
   .callButton {
     width: 100%;
     justify-content: center;
+    padding: 12px 18px;
+    border-radius: 12px;
+  }
+}
+
+@media (max-width: 400px) {
+  .blogSection {
+    width: calc(100vw - 16px);
+    max-width: calc(100vw - 16px);
+    padding: 16px 12px 18px;
+  }
+
+  .cardContent {
+    padding: 14px 14px 16px;
+  }
+
+  .cardTitle {
+    font-size: 0.95rem;
+  }
+
+  .cardText {
+    font-size: 0.85rem;
+  }
+
+  .callbackPanel {
+    padding: 14px 12px;
   }
 }

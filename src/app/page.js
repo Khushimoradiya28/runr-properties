@@ -5,6 +5,7 @@ import FeaturedProperties from "./components/FeaturedProperties";
 import CityPortal from "./components/CityPortal";
 import BlogSection from "./components/BlogSection";
 import BenefitsCalculatorSection from "./components/BenefitsCalculatorSection";
+import Footer from "./components/Footer";
 
 export default function Home() {
   return (
@@ -15,6 +16,7 @@ export default function Home() {
       <CityPortal />
       <BenefitsCalculatorSection />
       <BlogSection />
+      <Footer/>
     </div>
   );
 }

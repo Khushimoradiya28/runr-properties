@@ -12,6 +12,8 @@
   border: 1px solid rgba(30, 58, 95, 0.1);
   box-shadow: 0 28px 70px rgba(30, 58, 95, 0.1);
   min-height: 600px;
+  /* Recommended banner image size: 1920×800px */
+  aspect-ratio: 1920 / 800;
   background:
     linear-gradient(
       120deg,
@@ -261,10 +263,18 @@
   color: #6b7280;
 }
 
+/* ——————————————————————————————————
+   RESPONSIVE BREAKPOINTS
+   —————————————————————————————————— */
+
 @media (max-width: 1200px) {
   .bannerSection {
     width: calc(100vw - 80px);
     max-width: calc(100vw - 80px);
+  }
+
+  .bannerInner {
+    min-height: 540px;
   }
 
   .bannerTop {
@@ -273,13 +283,14 @@
 
   .bannerBottom {
     padding: 0 28px 28px;
-     left: 30px;
-        right: 30px;
-        bottom: 30px;
+    left: 30px;
+    right: 30px;
+    bottom: 30px;
   }
 
   .bannerSearchCard {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
   }
 
   .bannerCTA {
@@ -288,40 +299,194 @@
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 880px) {
   .bannerSection {
-    padding: 0 16px 48px;
+    width: calc(100vw - 40px);
+    max-width: calc(100vw - 40px);
+    margin: 18px auto 0;
+    padding: 0 0 56px;
   }
 
-  .bannerTop{
-    padding-left: 18px;
-    padding-right: 18px;
+  .bannerInner {
+    min-height: 480px;
+    border-radius: 22px;
+  }
+
+  .bannerTop {
+    padding: 28px 24px 18px;
+  }
+
+  .bannerTitle {
+    max-width: 100%;
+  }
+
+  .bannerText {
+    font-size: 0.95rem;
+    max-width: 100%;
   }
 
   .bannerBottom {
     position: static;
-        left: auto;
-        right: auto;
-        bottom: auto;
-        margin-top: 25px;
-        padding: 0;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    padding: 0 24px 28px;
+  }
+
+  .marketTabs {
+    gap: 6px;
+    padding-left: 4px;
+  }
+
+  .tabLabel,
+  .tabActive {
+    padding: 10px 20px;
+    font-size: 0.88rem;
+  }
+
+  .bannerSearchCard {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    padding: 18px;
+    border-radius: 0 16px 16px 16px;
+  }
+
+  .fieldInput,
+  .select {
+    min-height: 46px;
+    font-size: 0.88rem;
+    padding: 10px 32px 10px 38px;
+  }
+
+  .bannerCTA {
+    grid-column: 1 / -1;
+    width: 100%;
+    min-height: 48px;
+  }
+
+  .bannerStats {
+    gap: 10px;
+  }
+
+  .statItem {
+    padding: 12px 14px;
+    min-width: 120px;
+  }
+}
+
+@media (max-width: 640px) {
+  .bannerSection {
+    width: calc(100vw - 24px);
+    max-width: calc(100vw - 24px);
+    margin: 12px auto 0;
+    padding: 0 0 40px;
+  }
+
+  .bannerInner {
+    min-height: auto;
+    border-radius: 18px;
+    background-position: top center;
+  }
+
+  .bannerTop {
+    padding: 24px 18px 16px;
+  }
+
+  .bannerText {
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .bannerBottom {
+    position: static;
+    left: auto;
+    right: auto;
+    bottom: auto;
+    padding: 0 18px 24px;
   }
 
   .marketTabs {
     flex-wrap: wrap;
     padding-left: 0;
+    gap: 6px;
   }
 
   .tabLabel,
   .tabActive {
     flex: 1;
     text-align: center;
+    padding: 10px 14px;
     border-radius: 12px;
     border-bottom: 1px solid rgba(30, 58, 95, 0.14);
+    font-size: 0.84rem;
   }
 
   .bannerSearchCard {
     grid-template-columns: 1fr;
     border-radius: 18px;
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .fieldInput,
+  .select {
+    min-height: 44px;
+    font-size: 0.86rem;
+    border-radius: 10px;
+  }
+
+  .bannerCTA {
+    min-height: 46px;
+    border-radius: 10px;
+    font-size: 0.9rem;
+  }
+
+  .bannerStats {
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  .statItem {
+    padding: 10px 12px;
+    min-width: 0;
+    flex: 1;
+    border-radius: 10px;
+  }
+
+  .statItem strong {
+    font-size: 0.92rem;
+  }
+
+  .statItem span {
+    font-size: 0.75rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .bannerSection {
+    width: calc(100vw - 16px);
+    max-width: calc(100vw - 16px);
+  }
+
+  .bannerInner {
+    border-radius: 14px;
+  }
+
+  .bannerTop {
+    padding: 20px 14px 12px;
+  }
+
+  .bannerBottom {
+    padding: 0 14px 20px;
+  }
+
+  .bannerSearchCard {
+    padding: 14px;
+  }
+
+  .tabLabel,
+  .tabActive {
+    padding: 8px 10px;
+    font-size: 0.8rem;
   }
 }
