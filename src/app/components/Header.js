@@ -4,7 +4,14 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import styles from "./Header.module.css";
 
-const navItems = ["Buy", "Rent", "Home Loans", "Blog", "About", "Contact"];
+const navItems = [
+  { label: "Buy", href: "/buy" },
+  { label: "Rent", href: "/rent" },
+  { label: "Home Loans", href: "/home-loans" },
+  { label: "Blog", href: "/blog" },
+  { label: "About", href: "/about" },
+  { label: "Contact", href: "/contact" },
+];
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -202,9 +209,9 @@ export default function Header() {
         </Link>
 
         <nav className={styles.nav} aria-label="Primary navigation">
-          {navItems.map((label) => (
-            <Link key={label} href="#" className={styles.navLink}>
-              {label}
+          {navItems.map((item) => (
+            <Link key={item.label} href={item.href} className={styles.navLink}>
+              {item.label}
             </Link>
           ))}
         </nav>
@@ -306,14 +313,14 @@ export default function Header() {
         </div>
 
         <div className={styles.mobileNav}>
-          {navItems.map((label) => (
+          {navItems.map((item) => (
             <Link
-              key={label}
-              href="#"
+              key={item.label}
+              href={item.href}
               className={styles.mobileNavLink}
               onClick={closeMenu}
             >
-              {label}
+              {item.label}
             </Link>
           ))}
         </div>

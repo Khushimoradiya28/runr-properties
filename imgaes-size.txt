@@ -34,4 +34,13 @@
    - Type: Feature icon
    - Notes: Square, simple illustration style
 
+
+---Buy Properties Page---
+
+1. Property Listing Cards
+   - Upload Size: 400 x 280 px
+   - Format: JPG (compressed, max 150KB)
+   - Type: Property thumbnail for grid/list view
+   - Notes: Landscape, front view, well-lit photo
+
 ===================================================
