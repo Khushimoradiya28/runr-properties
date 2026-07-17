@@ -3,6 +3,7 @@ import Header from "./components/Header";
 import HeroBanner from "./components/HeroBanner";
 import FeaturedProperties from "./components/FeaturedProperties";
 import CityPortal from "./components/CityPortal";
+import BlogSection from "./components/BlogSection";
 import BenefitsCalculatorSection from "./components/BenefitsCalculatorSection";
 
 export default function Home() {
@@ -13,6 +14,7 @@ export default function Home() {
       <FeaturedProperties />
       <CityPortal />
       <BenefitsCalculatorSection />
+      <BlogSection />
     </div>
   );
 }

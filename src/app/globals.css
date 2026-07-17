@@ -42,6 +42,34 @@ a {
   text-decoration: none;
 }
 
+button,
+.callButton,
+.ctaButton,
+.bannerCTA,
+.sliderButton,
+.iconButton {
+  transition: transform 0.22s ease, background 0.22s ease, box-shadow 0.22s ease, color 0.22s ease;
+}
+
+button:hover,
+.callButton:hover,
+.ctaButton:hover,
+.bannerCTA:hover,
+.sliderButton:hover,
+.iconButton:hover {
+  transform: translateY(-2px);
+}
+
+button:focus-visible,
+.callButton:focus-visible,
+.ctaButton:focus-visible,
+.bannerCTA:focus-visible,
+.sliderButton:focus-visible,
+.iconButton:focus-visible {
+  outline: 2px solid rgba(63, 166, 107, 0.8);
+  outline-offset: 2px;
+}
+
 h1 {
   font-size: clamp(2.4rem, 3.2vw, 3rem);
   font-weight: 800;

@@ -8,11 +8,12 @@
 .header {
   position: sticky;
   top: 0;
-  z-index: 60;
+  z-index: 1000;
   width: 100%;
   background: var(--bg);
   border-bottom: 1px solid rgba(30,58,95,0.06);
   box-shadow: 0 6px 18px rgba(30,58,95,0.04);
+  backdrop-filter: blur(12px);
 }
 
 .container {
@@ -75,13 +76,13 @@
   border-radius: 12px;
   font-weight: 600;
   font-size: 0.95rem;
-  transition: background 160ms ease, transform 160ms ease, color 160ms ease;
+  transition: background 180ms ease, transform 180ms ease, color 180ms ease;
 }
 
 .navLink:hover,
 .navLink:focus-visible {
-  background: var(--muted);
-  color: var(--nav-deep);
+  background: rgba(63, 166, 107, 0.12);
+  color: #0f172a;
   transform: translateY(-2px);
 }
 

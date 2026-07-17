@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Image from "next/image";
 import styles from "./BenefitsCalculatorSection.module.css";
 
 const benefits = [
@@ -70,7 +71,7 @@ export default function BenefitsCalculatorSection() {
             {benefits.map((item) => (
               <article key={item.title} className={styles.benefitCard}>
                 <div className={styles.benefitIcon}>
-                  <img src={item.image} alt="" aria-hidden="true" />
+                  <Image src={item.image} alt="" aria-hidden="true" width={64} height={64} />
                 </div>
                 <h3>{item.title}</h3>
                 <p>{item.description}</p>

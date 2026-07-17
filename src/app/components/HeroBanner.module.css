@@ -2,7 +2,7 @@
   width: calc(100vw - 300px);
   max-width: calc(100vw - 300px);
   margin: 28px auto 0;
-  padding: 0 0 64px;
+  padding: 0 0 72px;
 }
 
 .bannerInner {
@@ -11,12 +11,13 @@
   border-radius: 28px;
   border: 1px solid rgba(30, 58, 95, 0.1);
   box-shadow: 0 28px 70px rgba(30, 58, 95, 0.1);
+  min-height: 600px;
   background:
     linear-gradient(
-      180deg,
-      rgba(255, 255, 255, 0.92) 0%,
-      rgba(255, 255, 255, 0.88) 45%,
-      rgba(255, 255, 255, 0.82) 100%
+      120deg,
+      rgba(255, 255, 255, 0.74) 0%,
+      rgba(255, 255, 255, 0.58) 48%,
+      rgba(255, 255, 255, 0.42) 100%
     ),
     url("/img/home-banner.jpg");
   background-size: cover;
@@ -25,7 +26,7 @@
 }
 
 .bannerTop {
-  padding: 38px 38px 28px;
+  padding: 54px 38px 34px;
 }
 
 .bannerCopy {
@@ -50,7 +51,12 @@
 }
 
 .bannerBottom {
-  padding: 0 38px 34px;
+  padding: 0 38px 42px;
+  position: absolute;
+    left: 40px;
+    right: 40px;
+    bottom: 0;
+    z-index: 5;
 }
 
 .searchShell {
@@ -267,6 +273,9 @@
 
   .bannerBottom {
     padding: 0 28px 28px;
+     left: 30px;
+        right: 30px;
+        bottom: 30px;
   }
 
   .bannerSearchCard {
@@ -284,10 +293,18 @@
     padding: 0 16px 48px;
   }
 
-  .bannerTop,
-  .bannerBottom {
+  .bannerTop{
     padding-left: 18px;
     padding-right: 18px;
+  }
+
+  .bannerBottom {
+    position: static;
+        left: auto;
+        right: auto;
+        bottom: auto;
+        margin-top: 25px;
+        padding: 0;
   }
 
   .marketTabs {

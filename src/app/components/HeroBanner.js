@@ -27,6 +27,8 @@ export default function HeroBanner() {
           </div>
         </div>
 
+        
+
         <div className={styles.bannerBottom}>
           <div className={styles.searchShell}>
             <div className={styles.marketTabs} role="tablist" aria-label="Market tabs">
@@ -151,21 +153,6 @@ export default function HeroBanner() {
                 Search
               </button>
             </form>
-          </div>
-
-          <div className={styles.bannerStats}>
-            <div className={styles.statItem}>
-              <strong>12,480</strong>
-              <span>Verified listings</span>
-            </div>
-            <div className={styles.statItem}>
-              <strong>4.8/5</strong>
-              <span>Customer rating</span>
-            </div>
-            <div className={styles.statItem}>
-              <strong>24/7</strong>
-              <span>Support availability</span>
-            </div>
           </div>
         </div>
       </div>
