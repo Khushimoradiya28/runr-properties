@@ -1,0 +1,167 @@
+.card {
+  background: #ffffff;
+  border: 1px solid rgba(30, 58, 95, 0.08);
+  border-radius: 22px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 12px 36px rgba(30, 58, 95, 0.06);
+  transition: transform 0.28s ease, box-shadow 0.28s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 24px 56px rgba(30, 58, 95, 0.12);
+}
+
+.cardList { flex-direction: row; border-radius: 18px; }
+.cardList .cardImageWrap { flex: 0 0 280px; max-width: 280px; }
+.cardList .cardImage { height: 100%; min-height: 220px; border-radius: 18px 0 0 18px; }
+.cardList .cardContent { flex: 1; padding: 22px 24px; justify-content: center; }
+
+.cardImageWrap { position: relative; overflow: hidden; }
+
+.cardImage {
+  height: 260px;
+  background-color: #f3f6fb;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: transform 0.35s ease;
+}
+
+.card:hover .cardImage { transform: scale(1.03); }
+
+.badgeRow { position: absolute; top: 14px; left: 14px; display: flex; gap: 6px; z-index: 3; }
+
+.badgeType {
+  padding: 5px 12px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #1e3a5f, #16304b);
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.badgeFurnish {
+  padding: 5px 12px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #166534;
+  font-size: 0.72rem;
+  font-weight: 700;
+  border: 1px solid rgba(63, 166, 107, 0.2);
+}
+
+.likeBtn {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: none;
+  background: #ffffff;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  z-index: 3;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+  transition: transform 0.15s ease;
+}
+
+.likeBtn svg { width: 20px; height: 20px; }
+.likeBtn:hover { transform: scale(1.1); }
+.likeBtn.liked { background: #ffffff; transform: scale(1.05); }
+
+.cardContent {
+  padding: 20px 22px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex: 1;
+}
+
+.cardTop { display: flex; flex-direction: column; gap: 6px; }
+
+.cardTitle { margin: 0; font-size: 1.08rem; font-weight: 700; color: #10203b; line-height: 1.3; }
+
+.cardLocation {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #5a6f85;
+  font-size: 0.85rem;
+}
+
+.cardLocation svg { width: 14px; height: 14px; flex-shrink: 0; color: #3fa66b; }
+
+.cardDetails { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.detailItem {
+  color: #475569;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: #f1f5f9;
+}
+
+.amenities { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.amenityTag {
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.amenityMore {
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: #ecfdf5;
+  color: #166534;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.cardFooter {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid rgba(30, 58, 95, 0.06);
+}
+
+.priceBlock { display: flex; align-items: baseline; gap: 4px; }
+.rentValue { font-size: 1.2rem; font-weight: 800; color: #1e3a5f; }
+.rentLabel { font-size: 0.78rem; color: #64748b; font-weight: 500; }
+
+.depositBlock { display: flex; align-items: center; gap: 4px; }
+.depositLabel { font-size: 0.75rem; color: #94a3b8; }
+.depositValue { font-size: 0.85rem; font-weight: 700; color: #475569; }
+
+@media (max-width: 880px) {
+  .cardList { flex-direction: column; }
+  .cardList .cardImageWrap { flex: none; max-width: 100%; }
+  .cardList .cardImage { height: 200px; min-height: 200px; border-radius: 0; }
+  .cardList .cardContent { padding: 18px 20px; }
+}
+
+@media (max-width: 640px) {
+  .card { border-radius: 16px; }
+  .cardImage { height: 200px; }
+  .cardContent { padding: 16px 18px 18px; gap: 12px; }
+  .cardTitle { font-size: 1rem; }
+  .rentValue { font-size: 1.08rem; }
+}
+
+@media (max-width: 400px) {
+  .cardImage { height: 170px; }
+  .cardContent { padding: 14px 14px 16px; }
+}

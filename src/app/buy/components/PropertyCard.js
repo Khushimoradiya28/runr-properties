@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useWishlist } from "../../context/WishlistContext";
 import styles from "./PropertyCard.module.css";
 
 function formatPrice(price) {
@@ -23,7 +23,8 @@ function capitalizeFirst(str) {
 }
 
 export default function PropertyCard({ property, viewMode }) {
-  const [liked, setLiked] = useState(false);
+  const { isInWishlist, toggleWishlist } = useWishlist();
+  const liked = isInWishlist(property.id);
 
   const isListView = viewMode === "list";
 
@@ -47,7 +48,7 @@ export default function PropertyCard({ property, viewMode }) {
         {/* Like button */}
         <button
           className={`${styles.likeBtn} ${liked ? styles.liked : ""}`}
-          onClick={() => setLiked((v) => !v)}
+          onClick={() => toggleWishlist(property)}
           aria-label={liked ? "Remove from wishlist" : "Add to wishlist"}
           aria-pressed={liked}
         >

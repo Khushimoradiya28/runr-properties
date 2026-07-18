@@ -194,8 +194,8 @@ const ITEMS_PER_PAGE = 6;
 
 export default function BuyPage() {
   const [filters, setFilters] = useState({
-    city: "",
-    type: "",
+    city: [],
+    type: [],
     bhk: "",
     budgetMin: "",
     budgetMax: "",
@@ -212,11 +212,11 @@ export default function BuyPage() {
   const filteredProperties = useMemo(() => {
     let results = [...allProperties];
 
-    if (filters.city) {
-      results = results.filter((p) => p.city === filters.city);
+    if (filters.city.length > 0) {
+      results = results.filter((p) => filters.city.includes(p.city));
     }
-    if (filters.type) {
-      results = results.filter((p) => p.type === filters.type);
+    if (filters.type.length > 0) {
+      results = results.filter((p) => filters.type.includes(p.type));
     }
     if (filters.bhk) {
       const bhkVal = parseInt(filters.bhk);
@@ -279,8 +279,8 @@ export default function BuyPage() {
 
   const handleClearFilters = () => {
     setFilters({
-      city: "",
-      type: "",
+      city: [],
+      type: [],
       bhk: "",
       budgetMin: "",
       budgetMax: "",

@@ -98,14 +98,13 @@
   height: 38px;
   border-radius: 50%;
   border: none;
-  background:#aba9a9cc;
-  backdrop-filter: blur(4px);
+  background: #ffffff;
   display: grid;
   place-items: center;
   cursor: pointer;
   z-index: 3;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  transition: transform 0.15s ease, background 0.15s ease;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+  transition: transform 0.15s ease;
 }
 
 .likeBtn svg {
@@ -115,11 +114,10 @@
 
 .likeBtn:hover {
   transform: scale(1.1);
-  background: rgba(255, 255, 255, 0.95);
 }
 
 .likeBtn.liked {
-  background: rgba(255, 255, 255, 0.95);
+  background: #ffffff;
   transform: scale(1.05);
 }
 

@@ -1,4 +1,6 @@
 import { Geist, Geist_Mono } from "next/font/google";
+import { WishlistProvider } from "./context/WishlistContext";
+import WishlistToast from "./components/WishlistToast";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -19,7 +21,12 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
-      <body suppressHydrationWarning>{children}</body>
+      <body suppressHydrationWarning>
+        <WishlistProvider>
+          {children}
+          <WishlistToast />
+        </WishlistProvider>
+      </body>
     </html>
   );
 }

@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import MultiSelectDropdown from "../../components/MultiSelectDropdown";
 import styles from "./PropertyFilters.module.css";
 
 const cityOptions = [
-  { value: "", label: "All Cities" },
   { value: "ahmedabad", label: "Ahmedabad" },
   { value: "surat", label: "Surat" },
   { value: "vadodara", label: "Vadodara" },
@@ -58,7 +58,7 @@ const postedByOptions = [
 export default function PropertyFilters({ filters, onFilterChange, onClearFilters, resultCount }) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const hasActiveFilters = Object.values(filters).some((v) => v !== "");
+  const hasActiveFilters = Object.values(filters).some((v) => Array.isArray(v) ? v.length > 0 : v !== "");
 
   return (
     <>

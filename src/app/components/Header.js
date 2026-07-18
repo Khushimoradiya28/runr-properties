@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import { useWishlist } from "../context/WishlistContext";
 import styles from "./Header.module.css";
 
 const navItems = [
@@ -15,6 +16,7 @@ const navItems = [
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { wishlistCount } = useWishlist();
 
   const toggleMenu = useCallback(() => {
     setMenuOpen((prev) => !prev);
@@ -24,7 +26,6 @@ export default function Header() {
     setMenuOpen(false);
   }, []);
 
-  // Lock body scroll when drawer is open
   useEffect(() => {
     if (menuOpen) {
       document.body.style.overflow = "hidden";
@@ -36,7 +37,6 @@ export default function Header() {
     };
   }, [menuOpen]);
 
-  // Close on Escape key
   useEffect(() => {
     const handleKey = (e) => {
       if (e.key === "Escape" && menuOpen) closeMenu();
@@ -217,7 +217,8 @@ export default function Header() {
         </nav>
 
         <div className={styles.actions}>
-          <button
+          <Link
+            href="/wishlist"
             className={styles.iconButton}
             aria-label="Wishlist"
             title="Wishlist"
@@ -231,7 +232,10 @@ export default function Header() {
                 strokeLinejoin="round"
               />
             </svg>
-          </button>
+            {wishlistCount > 0 && (
+              <span className={styles.wishlistBadge}>{wishlistCount}</span>
+            )}
+          </Link>
 
           <button
             className={styles.iconButton}
@@ -259,7 +263,6 @@ export default function Header() {
             <span>Login / Signup</span>
           </Link>
 
-          {/* Hamburger — visible only on mobile/tablet */}
           <button
             className={styles.hamburger}
             onClick={toggleMenu}
@@ -278,14 +281,12 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Mobile overlay */}
       <div
         className={`${styles.mobileOverlay} ${menuOpen ? styles.overlayVisible : ""}`}
         onClick={closeMenu}
         aria-hidden="true"
       />
 
-      {/* Mobile drawer */}
       <nav
         className={`${styles.mobileDrawer} ${menuOpen ? styles.drawerOpen : ""}`}
         aria-label="Mobile navigation"

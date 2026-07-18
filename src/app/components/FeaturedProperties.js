@@ -1,59 +1,95 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
+import { useWishlist } from "../context/WishlistContext";
 import styles from "./FeaturedProperties.module.css";
 
 const featuredItems = [
   {
+    id: 101,
     title: "3 BHK Apartment",
     location: "Ahmedabad",
-    price: "₹ 85 Lakh",
-    size: "1240 Sq.Ft.",
+    city: "ahmedabad",
+    type: "apartment",
+    bhk: 3,
+    price: 8500000,
+    area: 1240,
     image: "/img/featured-properties/1.jpg",
   },
   {
+    id: 102,
     title: "2 BHK Apartment",
     location: "Surat",
-    price: "₹ 65 Lakh",
-    size: "980 Sq.Ft.",
+    city: "surat",
+    type: "apartment",
+    bhk: 2,
+    price: 6500000,
+    area: 980,
     image: "/img/featured-properties/2.jpg",
   },
   {
+    id: 103,
     title: "4 BHK Villa",
     location: "Vadodara",
-    price: "₹ 1.35 Cr",
-    size: "2200 Sq.Ft.",
+    city: "vadodara",
+    type: "villa",
+    bhk: 4,
+    price: 13500000,
+    area: 2200,
     image: "/img/featured-properties/3.jpg",
   },
   {
+    id: 104,
     title: "2 BHK Apartment",
     location: "Rajkot",
-    price: "₹ 55 Lakh",
-    size: "860 Sq.Ft.",
+    city: "rajkot",
+    type: "apartment",
+    bhk: 2,
+    price: 5500000,
+    area: 860,
     image: "/img/featured-properties/4.jpg",
   },
   {
+    id: 105,
     title: "Premium Plot",
     location: "Gandhinagar",
-    price: "₹ 1.1 Cr",
-    size: "1750 Sq.Ft.",
+    city: "gandhinagar",
+    type: "plot",
+    bhk: 0,
+    price: 11000000,
+    area: 1750,
     image: "/img/featured-properties/1.jpg",
   },
   {
+    id: 106,
     title: "Luxury Villa",
     location: "Vadodara",
-    price: "₹ 2.2 Cr",
-    size: "3200 Sq.Ft.",
+    city: "vadodara",
+    type: "villa",
+    bhk: 4,
+    price: 22000000,
+    area: 3200,
     image: "/img/featured-properties/2.jpg",
   },
 ];
 
+function formatPrice(price) {
+  if (price >= 10000000) {
+    return `₹ ${(price / 10000000).toFixed(2)} Cr`;
+  }
+  if (price >= 100000) {
+    return `₹ ${(price / 100000).toFixed(0)} Lakh`;
+  }
+  return `₹ ${price.toLocaleString("en-IN")}`;
+}
+
 function PropertyCard({ item }) {
-  const [liked, setLiked] = useState(false);
+  const { isInWishlist, toggleWishlist } = useWishlist();
+  const liked = isInWishlist(item.id);
 
   const toggleLike = (e) => {
     e.stopPropagation();
-    setLiked((v) => !v);
+    toggleWishlist(item);
   };
 
   return (
@@ -64,7 +100,7 @@ function PropertyCard({ item }) {
       >
         <button
           className={liked ? `${styles.cardActionOverlay} ${styles.liked}` : styles.cardActionOverlay}
-          aria-label={liked ? "Unlike property" : "Like property"}
+          aria-label={liked ? "Remove from wishlist" : "Add to wishlist"}
           aria-pressed={liked}
           onClick={toggleLike}
         >
@@ -84,8 +120,8 @@ function PropertyCard({ item }) {
         </div>
         <p className={styles.cardLocation}>{item.location}</p>
         <div className={styles.cardFooter}>
-          <span className={styles.cardPrice}>{item.price}</span>
-          <span className={styles.cardSize}>{item.size}</span>
+          <span className={styles.cardPrice}>{formatPrice(item.price)}</span>
+          <span className={styles.cardSize}>{item.area.toLocaleString("en-IN")} Sq.Ft.</span>
         </div>
       </div>
     </article>
@@ -186,7 +222,7 @@ export default function FeaturedProperties() {
 
       <div ref={sliderRef} className={styles.featuredGrid} suppressHydrationWarning>
         {loopItems.map((item, index) => (
-          <PropertyCard key={`${item.title}-${item.location}-${index}`} item={item} />
+          <PropertyCard key={`${item.id}-${index}`} item={item} />
         ))}
       </div>
     </section>

@@ -3,6 +3,7 @@
 ===================================================
 
 ---Home Page---
+===================================================
 
 1. Banner Image
    - Upload Size: 1920 x 800 px
@@ -36,6 +37,7 @@
 
 
 ---Buy Properties Page---
+===================================================
 
 1. Property Listing Cards
    - Upload Size: 400 x 280 px
@@ -43,4 +45,15 @@
    - Type: Property thumbnail for grid/list view
    - Notes: Landscape, front view, well-lit photo
 
+
+---Rent Properties Page---
 ===================================================
+
+1. Rental Property Cards
+   - Upload Size: 600 x 400 px
+   - Format: JPG (compressed, max 200KB)
+   - Type: Property thumbnail for grid/list view
+   - Notes: Landscape, well-lit interior/exterior photo
+   - Folder: public/img/rent/
+
+
