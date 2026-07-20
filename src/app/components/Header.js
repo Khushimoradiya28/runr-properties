@@ -121,7 +121,7 @@ export default function Header() {
 
           {isAuthenticated ? (
             <Link href="/profile" className={styles.ctaButton}>
-              <span>{user?.name?.split(" ")[0]}</span>
+              <span>{user?.name}</span>
             </Link>
           ) : (
             <Link href="/login" className={styles.ctaButton}>
