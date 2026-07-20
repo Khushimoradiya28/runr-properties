@@ -1,4 +1,5 @@
 import { Geist, Geist_Mono } from "next/font/google";
+import { AuthProvider } from "./context/AuthContext";
 import { WishlistProvider } from "./context/WishlistContext";
 import WishlistToast from "./components/WishlistToast";
 import "./globals.css";
@@ -22,10 +23,12 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body suppressHydrationWarning>
-        <WishlistProvider>
-          {children}
-          <WishlistToast />
-        </WishlistProvider>
+        <AuthProvider>
+          <WishlistProvider>
+            {children}
+            <WishlistToast />
+          </WishlistProvider>
+        </AuthProvider>
       </body>
     </html>
   );

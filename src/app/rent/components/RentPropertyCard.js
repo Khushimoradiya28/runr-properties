@@ -24,7 +24,9 @@ export default function RentPropertyCard({ property, viewMode }) {
   return (
     <article className={`${styles.card} ${isListView ? styles.cardList : ""}`}>
       <div className={styles.cardImageWrap}>
-        <div className={styles.cardImage} style={{ backgroundImage: `url('${property.image}')` }} />
+        <div className={styles.cardImage}>
+          <img src={property.image} alt={property.title} className={styles.cardImg} loading="lazy" />
+        </div>
         <div className={styles.badgeRow}>
           <span className={styles.badgeType}>{capitalizeFirst(property.type)}</span>
           {property.furnishing !== "unfurnished" && (

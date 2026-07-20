@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import MultiSelectDropdown from "../../components/MultiSelectDropdown";
 import styles from "./RentFilters.module.css";
 
 const cityOptions = [
@@ -19,7 +20,6 @@ const typeOptions = [
 ];
 
 const bhkOptions = [
-  { value: "", label: "Any" },
   { value: "1", label: "1 BHK" },
   { value: "2", label: "2 BHK" },
   { value: "3", label: "3 BHK" },
@@ -39,7 +39,6 @@ const rentOptions = [
 ];
 
 const furnishingOptions = [
-  { value: "", label: "Any" },
   { value: "furnished", label: "Furnished" },
   { value: "semi-furnished", label: "Semi-Furnished" },
   { value: "unfurnished", label: "Unfurnished" },
@@ -55,15 +54,6 @@ const postedByOptions = [
 export default function RentFilters({ filters, onFilterChange, onClearFilters, resultCount }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const hasActiveFilters = Object.values(filters).some((v) => Array.isArray(v) ? v.length > 0 : v !== "");
-
-  const toggleMulti = (key, value) => {
-    const current = filters[key] || [];
-    if (current.includes(value)) {
-      onFilterChange(key, current.filter((v) => v !== value));
-    } else {
-      onFilterChange(key, [...current, value]);
-    }
-  };
 
   return (
     <>
@@ -96,40 +86,37 @@ export default function RentFilters({ filters, onFilterChange, onClearFilters, r
         </div>
 
         <div className={styles.filterBody}>
-          {/* City - Multi Select */}
+          {/* City */}
           <div className={styles.filterGroup}>
-            <label className={styles.filterLabel}>City (select multiple)</label>
-            <div className={styles.chipGroup}>
-              {cityOptions.map((opt) => (
-                <button key={opt.value} type="button" className={`${styles.chip} ${(filters.city || []).includes(opt.value) ? styles.chipActive : ""}`} onClick={() => toggleMulti("city", opt.value)}>
-                  {opt.label}
-                </button>
-              ))}
-            </div>
+            <label className={styles.filterLabel}>City</label>
+            <MultiSelectDropdown
+              options={cityOptions}
+              selected={filters.city || []}
+              onChange={(val) => onFilterChange("city", val)}
+              placeholder="All Cities"
+            />
           </div>
 
-          {/* Property Type - Multi Select */}
+          {/* Property Type */}
           <div className={styles.filterGroup}>
-            <label className={styles.filterLabel}>Property Type (select multiple)</label>
-            <div className={styles.chipGroup}>
-              {typeOptions.map((opt) => (
-                <button key={opt.value} type="button" className={`${styles.chip} ${(filters.type || []).includes(opt.value) ? styles.chipActive : ""}`} onClick={() => toggleMulti("type", opt.value)}>
-                  {opt.label}
-                </button>
-              ))}
-            </div>
+            <label className={styles.filterLabel}>Property Type</label>
+            <MultiSelectDropdown
+              options={typeOptions}
+              selected={filters.type || []}
+              onChange={(val) => onFilterChange("type", val)}
+              placeholder="All Types"
+            />
           </div>
 
           {/* BHK */}
           <div className={styles.filterGroup}>
             <label className={styles.filterLabel}>BHK</label>
-            <div className={styles.chipGroup}>
-              {bhkOptions.map((opt) => (
-                <button key={opt.value} type="button" className={`${styles.chip} ${filters.bhk === opt.value ? styles.chipActive : ""}`} onClick={() => onFilterChange("bhk", filters.bhk === opt.value ? "" : opt.value)}>
-                  {opt.label}
-                </button>
-              ))}
-            </div>
+            <MultiSelectDropdown
+              options={bhkOptions}
+              selected={filters.bhk || []}
+              onChange={(val) => onFilterChange("bhk", val)}
+              placeholder="Any BHK"
+            />
           </div>
 
           {/* Monthly Rent */}
@@ -151,9 +138,12 @@ export default function RentFilters({ filters, onFilterChange, onClearFilters, r
           {/* Furnishing */}
           <div className={styles.filterGroup}>
             <label className={styles.filterLabel}>Furnishing</label>
-            <select className={styles.filterSelect} value={filters.furnishing} onChange={(e) => onFilterChange("furnishing", e.target.value)}>
-              {furnishingOptions.map((opt) => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
-            </select>
+            <MultiSelectDropdown
+              options={furnishingOptions}
+              selected={filters.furnishing || []}
+              onChange={(val) => onFilterChange("furnishing", val)}
+              placeholder="Any"
+            />
           </div>
 
           {/* Posted By */}

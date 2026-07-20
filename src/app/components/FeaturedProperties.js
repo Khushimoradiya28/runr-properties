@@ -94,10 +94,8 @@ function PropertyCard({ item }) {
 
   return (
     <article className={styles.propertyCard}>
-      <div
-        className={styles.cardImage}
-        style={{ backgroundImage: `url('${item.image}')` }}
-      >
+      <div className={styles.cardImage}>
+        <img src={item.image} alt={item.title} className={styles.cardImg} loading="lazy" />
         <button
           className={liked ? `${styles.cardActionOverlay} ${styles.liked}` : styles.cardActionOverlay}
           aria-label={liked ? "Remove from wishlist" : "Add to wishlist"}

@@ -186,10 +186,10 @@ export default function RentPage() {
   const [filters, setFilters] = useState({
     city: [],
     type: [],
-    bhk: "",
+    bhk: [],
     rentMin: "",
     rentMax: "",
-    furnishing: "",
+    furnishing: [],
     postedBy: "",
     availableFrom: "",
   });
@@ -207,13 +207,8 @@ export default function RentPage() {
     if (filters.type.length > 0) {
       results = results.filter((p) => filters.type.includes(p.type));
     }
-    if (filters.bhk) {
-      const bhkVal = parseInt(filters.bhk);
-      if (bhkVal === 5) {
-        results = results.filter((p) => p.bhk >= 5);
-      } else {
-        results = results.filter((p) => p.bhk === bhkVal);
-      }
+    if (filters.bhk.length > 0) {
+      results = results.filter((p) => filters.bhk.includes(String(p.bhk)));
     }
     if (filters.rentMin) {
       results = results.filter((p) => p.rent >= parseInt(filters.rentMin));
@@ -221,8 +216,8 @@ export default function RentPage() {
     if (filters.rentMax) {
       results = results.filter((p) => p.rent <= parseInt(filters.rentMax));
     }
-    if (filters.furnishing) {
-      results = results.filter((p) => p.furnishing === filters.furnishing);
+    if (filters.furnishing.length > 0) {
+      results = results.filter((p) => filters.furnishing.includes(p.furnishing));
     }
     if (filters.postedBy) {
       results = results.filter((p) => p.postedBy === filters.postedBy);
@@ -266,10 +261,10 @@ export default function RentPage() {
     setFilters({
       city: [],
       type: [],
-      bhk: "",
+      bhk: [],
       rentMin: "",
       rentMax: "",
-      furnishing: "",
+      furnishing: [],
       postedBy: "",
       availableFrom: "",
     });

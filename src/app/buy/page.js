@@ -196,12 +196,12 @@ export default function BuyPage() {
   const [filters, setFilters] = useState({
     city: [],
     type: [],
-    bhk: "",
+    bhk: [],
     budgetMin: "",
     budgetMax: "",
     areaMin: "",
     areaMax: "",
-    furnishing: "",
+    furnishing: [],
     postedBy: "",
   });
 
@@ -218,13 +218,8 @@ export default function BuyPage() {
     if (filters.type.length > 0) {
       results = results.filter((p) => filters.type.includes(p.type));
     }
-    if (filters.bhk) {
-      const bhkVal = parseInt(filters.bhk);
-      if (bhkVal === 5) {
-        results = results.filter((p) => p.bhk >= 5);
-      } else {
-        results = results.filter((p) => p.bhk === bhkVal);
-      }
+    if (filters.bhk.length > 0) {
+      results = results.filter((p) => filters.bhk.includes(String(p.bhk)));
     }
     if (filters.budgetMin) {
       results = results.filter((p) => p.price >= parseInt(filters.budgetMin));
@@ -238,8 +233,8 @@ export default function BuyPage() {
     if (filters.areaMax) {
       results = results.filter((p) => p.area <= parseInt(filters.areaMax));
     }
-    if (filters.furnishing) {
-      results = results.filter((p) => p.furnishing === filters.furnishing);
+    if (filters.furnishing.length > 0) {
+      results = results.filter((p) => filters.furnishing.includes(p.furnishing));
     }
     if (filters.postedBy) {
       results = results.filter((p) => p.postedBy === filters.postedBy);
@@ -281,12 +276,12 @@ export default function BuyPage() {
     setFilters({
       city: [],
       type: [],
-      bhk: "",
+      bhk: [],
       budgetMin: "",
       budgetMax: "",
       areaMin: "",
       areaMax: "",
-      furnishing: "",
+      furnishing: [],
       postedBy: "",
     });
     setCurrentPage(1);
