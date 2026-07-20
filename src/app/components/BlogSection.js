@@ -30,7 +30,7 @@ export default function BlogSection() {
           <p className={styles.label}>Latest from Blog</p>
           <h2 className={styles.sectionTitle}>Real estate insights for buyers & investors</h2>
         </div>
-        <a href="#" className={styles.viewAll}>
+        <a href="/blog" className={styles.viewAll}>
           View All Blogs →
         </a>
       </div>

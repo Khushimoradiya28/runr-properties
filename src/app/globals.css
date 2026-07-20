@@ -101,6 +101,14 @@ h4 {
   line-height: 1.65;
   color: #3f5a7d;
 }
+.gray-bg{
+  background-color: #f9f9f9;
+}
+
+.theme-padding {
+  padding-left: 140px;
+  padding-right: 140px;
+}
 
 @media (max-width: 1024px) {
   h1 {

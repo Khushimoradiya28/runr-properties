@@ -7,6 +7,7 @@ import Link from "next/link";
 import styles from "./wishlist.module.css";
 
 function formatPrice(price) {
+  if (!price) return "₹ N/A";
   if (price >= 10000000) {
     return `₹ ${(price / 10000000).toFixed(2)} Cr`;
   }
@@ -58,10 +59,7 @@ export default function WishlistPage() {
             {wishlist.map((property) => (
               <article key={property.id} className={styles.wishlistCard}>
                 <div className={styles.cardImageWrap}>
-                  <div
-                    className={styles.cardImage}
-                    style={{ backgroundImage: `url('${property.image}')` }}
-                  />
+                  <img src={property.image} alt={property.title} className={styles.cardImg} loading="lazy" />
                   <div className={styles.badgeRow}>
                     <span className={styles.badgeType}>{capitalizeFirst(property.type)}</span>
                   </div>

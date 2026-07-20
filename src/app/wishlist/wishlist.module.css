@@ -125,18 +125,19 @@
 .cardImageWrap {
   position: relative;
   overflow: hidden;
+  height: 220px;
+  background: #f3f6fb;
 }
 
-.cardImage {
-  height: 220px;
-  background-color: #f3f6fb;
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
+.cardImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
   transition: transform 0.35s ease;
 }
 
-.wishlistCard:hover .cardImage {
+.wishlistCard:hover .cardImg {
   transform: scale(1.03);
 }
 

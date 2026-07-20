@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useWishlist } from "../context/WishlistContext";
 import { useAuth } from "../context/AuthContext";
 import styles from "./Header.module.css";
@@ -19,6 +20,7 @@ export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const { wishlistCount } = useWishlist();
   const { user, isAuthenticated, isOwner } = useAuth();
+  const pathname = usePathname();
 
   const toggleMenu = useCallback(() => {
     setMenuOpen((prev) => !prev);
@@ -50,11 +52,7 @@ export default function Header() {
   return (
     <header className={styles.header} role="banner">
       <div className={styles.container}>
-        <Link
-          href="/"
-          className={styles.brand}
-          aria-label="Runr Properties home"
-        >
+        <Link href="/" className={styles.brand} aria-label="Runr Properties home">
           <svg
             className={styles.logoMark}
             viewBox="0 0 64 64"
@@ -100,7 +98,7 @@ export default function Header() {
 
         <nav className={styles.nav} aria-label="Primary navigation">
           {navItems.map((item) => (
-            <Link key={item.label} href={item.href} className={styles.navLink}>
+            <Link key={item.label} href={item.href} className={`${styles.navLink} ${pathname === item.href ? styles.navLinkActive : ""}`}>
               {item.label}
             </Link>
           ))}
@@ -169,7 +167,7 @@ export default function Header() {
 
         <div className={styles.mobileNav}>
           {navItems.map((item) => (
-            <Link key={item.label} href={item.href} className={styles.mobileNavLink} onClick={closeMenu}>
+            <Link key={item.label} href={item.href} className={`${styles.mobileNavLink} ${pathname === item.href ? styles.mobileNavLinkActive : ""}`} onClick={closeMenu}>
               {item.label}
             </Link>
           ))}

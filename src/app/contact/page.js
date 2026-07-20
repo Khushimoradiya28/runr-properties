@@ -93,12 +93,12 @@ export default function ContactPage() {
               </div>
             </div>
 
-            <div className={styles.mapCard}>
+            {/* <div className={styles.mapCard}>
               <div className={styles.mapPlaceholder}>
                 <span>📍</span>
                 <p>Map will be integrated here</p>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </main>

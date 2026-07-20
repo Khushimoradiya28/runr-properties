@@ -90,7 +90,7 @@ export default function CityPortal() {
   };
 
   return (
-    <section className={styles.citySection}>
+    <section className={`${styles.citySection} gray-bg theme-padding`}>
       <div className={styles.cityHeader}>
         <div className={styles.sectionTitle}>
           <h2>Explore Properties in Top Cities</h2>

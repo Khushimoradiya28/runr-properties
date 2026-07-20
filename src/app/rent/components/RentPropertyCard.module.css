@@ -15,8 +15,9 @@
 }
 
 .cardList { flex-direction: row; border-radius: 18px; }
-.cardList .cardImageWrap { flex: 0 0 280px; max-width: 280px; }
-.cardList .cardImage { height: 100%; min-height: 220px; border-radius: 18px 0 0 18px; }
+.cardList .cardImageWrap { flex: 0 0 260px; max-width: 260px; height: 200px; }
+.cardList .cardImage { height: 100%; min-height: 200px; border-radius: 18px 0 0 18px; }
+.cardList .cardImg { height: 100%; }
 .cardList .cardContent { flex: 1; padding: 22px 24px; justify-content: center; }
 
 .cardImageWrap { position: relative; overflow: hidden; }

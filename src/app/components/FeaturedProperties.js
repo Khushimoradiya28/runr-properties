@@ -196,7 +196,7 @@ export default function FeaturedProperties() {
         <div>
           <h2 className={styles.sectionTitle}>Featured Properties</h2>
         </div>
-        <a href="#" className={styles.viewAll}>View All →</a>
+        <a href="/buy" className={styles.viewAll}>View All →</a>
       </div>
 
       <div className={styles.sliderControls}>

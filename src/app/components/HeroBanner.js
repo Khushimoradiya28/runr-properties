@@ -1,15 +1,31 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import styles from "./HeroBanner.module.css";
 
-const marketTabs = ["Buy", "Rent", "Commercial"];
+const marketTabs = ["Buy", "Rent"];
 
 export default function HeroBanner() {
   const [activeTab, setActiveTab] = useState("Buy");
+  const router = useRouter();
 
   const handleSearch = (event) => {
     event.preventDefault();
+    const formData = new FormData(event.target);
+    const location = formData.get("location") || "";
+    const type = formData.get("type") || "";
+    const budget = formData.get("budget") || "";
+    const bhk = formData.get("bhk") || "";
+
+    const page = activeTab === "Rent" ? "/rent" : "/buy";
+    const params = new URLSearchParams();
+    if (location) params.set("city", location.toLowerCase());
+    if (type) params.set("type", type.toLowerCase());
+    if (budget) params.set("budget", budget);
+    if (bhk) params.set("bhk", bhk.replace(" BHK", "").replace("+", ""));
+
+    router.push(`${page}${params.toString() ? "?" + params.toString() : ""}`);
   };
 
   return (
@@ -90,7 +106,7 @@ export default function HeroBanner() {
                       <option>Apartment</option>
                       <option>Villa</option>
                       <option>Plot</option>
-                      <option>Commercial</option>
+                      {/* <option>Commercial</option> */}
                     </select>
                     <svg className={styles.selectIcon} viewBox="0 0 24 24" aria-hidden="true">
                       <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" fill="none" />

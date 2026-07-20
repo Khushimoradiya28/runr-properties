@@ -464,3 +464,19 @@
     gap: 8px;
   }
 }
+
+/* Active nav link */
+.navLinkActive {
+  color: var(--accent);
+}
+
+.navLinkActive::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.mobileNavLinkActive {
+  background: rgba(63, 166, 107, 0.08);
+  color: var(--accent);
+  padding-left: 22px;
+}
