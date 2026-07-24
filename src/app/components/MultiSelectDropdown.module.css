@@ -114,3 +114,45 @@
 .clearSelection:hover {
   background: rgba(220, 38, 38, 0.04);
 }
+
+.dropdownActions {
+  display: flex;
+  gap: 8px;
+  padding: 8px 6px 4px;
+  border-top: 1px solid rgba(30, 58, 95, 0.06);
+  margin-top: 4px;
+}
+
+.clearBtn {
+  flex: 1;
+  padding: 7px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(30, 58, 95, 0.12);
+  background: #fff;
+  color: #5a6f85;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.clearBtn:hover {
+  background: #fef2f2;
+  color: #dc2626;
+  border-color: rgba(220, 38, 38, 0.2);
+}
+
+.applyBtn {
+  flex: 1;
+  padding: 7px 10px;
+  border-radius: 6px;
+  border: none;
+  background: #3fa66b;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.applyBtn:hover {
+  background: #358f5c;
+}

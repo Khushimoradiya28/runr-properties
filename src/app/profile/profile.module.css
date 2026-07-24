@@ -11,7 +11,7 @@
 .sidebarLink:hover { background: rgba(63,166,107,0.06); color: #3fa66b; }
 .sidebarLinkActive { background: rgba(63,166,107,0.08); color: #3fa66b; }
 .sidebarIcon { font-size: 1.2rem; width: 24px; text-align: center; }
-.logoutLink { margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(30,58,95,0.06); color: #dc2626; }
+.logoutLink { margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(30,58,95,0.06); color: #dc2626; background-color: #ffdada;}
 .logoutLink:hover { background: rgba(220,38,38,0.04); color: #dc2626; }
 
 /* Right Content */

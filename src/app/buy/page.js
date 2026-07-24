@@ -1,298 +1,137 @@
 "use client";
 
-import { useState, useMemo, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import PropertyFilters from "./components/PropertyFilters";
 import PropertyGrid from "./components/PropertyGrid";
+import { searchProperties } from "../services/api";
 import styles from "./buy.module.css";
 
-const allProperties = [
-  {
-    id: 1,
-    title: "3 BHK Luxury Apartment",
-    location: "Satellite, Ahmedabad",
-    city: "ahmedabad",
-    type: "apartment",
-    bhk: 3,
-    price: 8500000,
-    area: 1450,
-    furnishing: "semi-furnished",
-    postedBy: "builder",
-    postedDate: "2025-07-10",
-    image: "/img/buy-properties/1.jpg",
-    amenities: ["Parking", "Gym", "Swimming Pool"],
-  },
-  {
-    id: 2,
-    title: "2 BHK Modern Flat",
-    location: "Vesu, Surat",
-    city: "surat",
-    type: "apartment",
-    bhk: 2,
-    price: 5500000,
-    area: 980,
-    furnishing: "furnished",
-    postedBy: "owner",
-    postedDate: "2025-07-08",
-    image: "/img/buy-properties/2.jpg",
-    amenities: ["Parking", "Garden"],
-  },
-  {
-    id: 3,
-    title: "4 BHK Premium Villa",
-    location: "Gotri, Vadodara",
-    city: "vadodara",
-    type: "villa",
-    bhk: 4,
-    price: 18500000,
-    area: 2800,
-    furnishing: "furnished",
-    postedBy: "builder",
-    postedDate: "2025-07-05",
-    image: "/img/buy-properties/3.jpg",
-    amenities: ["Parking", "Garden", "Swimming Pool", "Gym"],
-  },
-  {
-    id: 4,
-    title: "2 BHK Apartment",
-    location: "Kalawad Road, Rajkot",
-    city: "rajkot",
-    type: "apartment",
-    bhk: 2,
-    price: 4200000,
-    area: 860,
-    furnishing: "unfurnished",
-    postedBy: "agent",
-    postedDate: "2025-07-12",
-    image: "/img/buy-properties/4.jpg",
-    amenities: ["Parking"],
-  },
-  {
-    id: 5,
-    title: "Premium Residential Plot",
-    location: "Kudasan, Gandhinagar",
-    city: "gandhinagar",
-    type: "plot",
-    bhk: 0,
-    price: 11000000,
-    area: 2000,
-    furnishing: "unfurnished",
-    postedBy: "owner",
-    postedDate: "2025-07-01",
-    image: "/img/buy-properties/5.jpg",
-    amenities: [],
-  },
-  {
-    id: 6,
-    title: "3 BHK Penthouse",
-    location: "SG Highway, Ahmedabad",
-    city: "ahmedabad",
-    type: "apartment",
-    bhk: 3,
-    price: 14500000,
-    area: 2100,
-    furnishing: "furnished",
-    postedBy: "builder",
-    postedDate: "2025-06-28",
-    image: "/img/buy-properties/6.jpg",
-    amenities: ["Parking", "Gym", "Swimming Pool", "Club House"],
-  },
-  {
-    id: 7,
-    title: "1 BHK Starter Home",
-    location: "Pal, Surat",
-    city: "surat",
-    type: "apartment",
-    bhk: 1,
-    price: 2800000,
-    area: 550,
-    furnishing: "semi-furnished",
-    postedBy: "owner",
-    postedDate: "2025-07-14",
-    image: "/img/buy-properties/7.jpg",
-    amenities: ["Parking"],
-  },
-  {
-    id: 8,
-    title: "Commercial Shop Space",
-    location: "CG Road, Ahmedabad",
-    city: "ahmedabad",
-    type: "commercial",
-    bhk: 0,
-    price: 9500000,
-    area: 600,
-    furnishing: "unfurnished",
-    postedBy: "agent",
-    postedDate: "2025-07-09",
-    image: "/img/buy-properties/8.jpg",
-    amenities: ["Parking", "Lift"],
-  },
-  {
-    id: 9,
-    title: "4 BHK Independent House",
-    location: "Manjalpur, Vadodara",
-    city: "vadodara",
-    type: "villa",
-    bhk: 4,
-    price: 12000000,
-    area: 2400,
-    furnishing: "semi-furnished",
-    postedBy: "owner",
-    postedDate: "2025-07-03",
-    image: "/img/buy-properties/9.jpg",
-    amenities: ["Parking", "Garden"],
-  },
-  {
-    id: 10,
-    title: "3 BHK Smart Home",
-    location: "Adajan, Surat",
-    city: "surat",
-    type: "apartment",
-    bhk: 3,
-    price: 7200000,
-    area: 1350,
-    furnishing: "furnished",
-    postedBy: "builder",
-    postedDate: "2025-07-11",
-    image: "/img/buy-properties/10.jpg",
-    amenities: ["Parking", "Gym", "Garden"],
-  },
-  {
-    id: 11,
-    title: "Luxury Villa with Pool",
-    location: "Bopal, Ahmedabad",
-    city: "ahmedabad",
-    type: "villa",
-    bhk: 5,
-    price: 32000000,
-    area: 4500,
-    furnishing: "furnished",
-    postedBy: "builder",
-    postedDate: "2025-06-25",
-    image: "/img/buy-properties/1.jpg",
-    amenities: ["Parking", "Swimming Pool", "Garden", "Club House", "Gym"],
-  },
-  {
-    id: 12,
-    title: "2 BHK Budget Flat",
-    location: "Naroda, Ahmedabad",
-    city: "ahmedabad",
-    type: "apartment",
-    bhk: 2,
-    price: 3200000,
-    area: 780,
-    furnishing: "unfurnished",
-    postedBy: "agent",
-    postedDate: "2025-07-15",
-    image: "/img/buy-properties/2.jpg",
-    amenities: ["Parking"],
-  },
-];
+const ITEMS_PER_PAGE = 12;
+const EMPTY_FILTERS = { city: [], type: [], bhk: [], budgetMin: "", budgetMax: "", areaMin: "", areaMax: "", furnishing: [], keyword: "" };
 
-const ITEMS_PER_PAGE = 6;
+function mapSort(val) {
+  if (val === "price-low") return "price";
+  if (val === "price-high") return "price_desc";
+  return val || "newest";
+}
+
+function readInitialParams() {
+  if (typeof window === "undefined") return { filters: EMPTY_FILTERS, sortBy: "newest", page: 1 };
+  const sp = new URLSearchParams(window.location.search);
+  return {
+    filters: {
+      city: sp.getAll("city"),
+      type: sp.getAll("type"),
+      bhk: sp.getAll("bhk"),
+      budgetMin: sp.get("minPrice") || "",
+      budgetMax: sp.get("maxPrice") || "",
+      areaMin: sp.get("areaMin") || "",
+      areaMax: sp.get("areaMax") || "",
+      furnishing: sp.getAll("furnishing"),
+      keyword: sp.get("q") || "",
+    },
+    sortBy: sp.get("sortBy") || "newest",
+    page: Number(sp.get("page")) || 1,
+  };
+}
 
 export default function BuyPage() {
-  const [filters, setFilters] = useState({
-    city: [],
-    type: [],
-    bhk: [],
-    budgetMin: "",
-    budgetMax: "",
-    areaMin: "",
-    areaMax: "",
-    furnishing: [],
-    postedBy: "",
-  });
+  const initial = useRef(readInitialParams());
 
-  const [sortBy, setSortBy] = useState("newest");
+  // Pending = what user sees in sidebar (not yet applied)
+  const [pending, setPending] = useState(initial.current.filters);
+  // Applied = what triggered the last API call
+  const [applied, setApplied] = useState(initial.current.filters);
+  const [sortBy, setSortBy] = useState(initial.current.sortBy);
+  const [currentPage, setCurrentPage] = useState(initial.current.page);
   const [viewMode, setViewMode] = useState("grid");
-  const [currentPage, setCurrentPage] = useState(1);
 
-  const filteredProperties = useMemo(() => {
-    let results = [...allProperties];
+  const [properties, setProperties] = useState([]);
+  const [gridLoading, setGridLoading] = useState(true);
+  const [totalResults, setTotalResults] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
 
-    if (filters.city.length > 0) {
-      results = results.filter((p) => filters.city.includes(p.city));
-    }
-    if (filters.type.length > 0) {
-      results = results.filter((p) => filters.type.includes(p.type));
-    }
-    if (filters.bhk.length > 0) {
-      results = results.filter((p) => filters.bhk.includes(String(p.bhk)));
-    }
-    if (filters.budgetMin) {
-      results = results.filter((p) => p.price >= parseInt(filters.budgetMin));
-    }
-    if (filters.budgetMax) {
-      results = results.filter((p) => p.price <= parseInt(filters.budgetMax));
-    }
-    if (filters.areaMin) {
-      results = results.filter((p) => p.area >= parseInt(filters.areaMin));
-    }
-    if (filters.areaMax) {
-      results = results.filter((p) => p.area <= parseInt(filters.areaMax));
-    }
-    if (filters.furnishing.length > 0) {
-      results = results.filter((p) => filters.furnishing.includes(p.furnishing));
-    }
-    if (filters.postedBy) {
-      results = results.filter((p) => p.postedBy === filters.postedBy);
-    }
+  const fetchData = useCallback(async (f, sort, page) => {
+    setGridLoading(true);
+    const q = { listingType: "buy", page: String(page), limit: String(ITEMS_PER_PAGE), sortBy: mapSort(sort) };
+    if (f.city.length > 0) q.city = f.city[0];
+    if (f.type.length > 0) q.propertyType = f.type[0];
+    if (f.bhk.length > 0) q.bedrooms = f.bhk[0];
+    if (f.budgetMin) q.minPrice = f.budgetMin;
+    if (f.budgetMax) q.maxPrice = f.budgetMax;
+    if (f.furnishing.length > 0) q.furnishing = f.furnishing[0];
+    if (f.keyword) q.q = f.keyword;
 
-    // Sort
-    switch (sortBy) {
-      case "price-low":
-        results.sort((a, b) => a.price - b.price);
-        break;
-      case "price-high":
-        results.sort((a, b) => b.price - a.price);
-        break;
-      case "newest":
-        results.sort((a, b) => new Date(b.postedDate) - new Date(a.postedDate));
-        break;
-      case "area":
-        results.sort((a, b) => b.area - a.area);
-        break;
-      default:
-        break;
+    const res = await searchProperties(q);
+    if (res.success) {
+      setProperties(res.properties || []);
+      setTotalResults(res.pagination?.total || 0);
+      setTotalPages(res.pagination?.totalPages || 0);
+    } else {
+      setProperties([]);
+      setTotalResults(0);
+      setTotalPages(0);
     }
+    setGridLoading(false);
 
-    return results;
-  }, [filters, sortBy]);
+    // Sync URL
+    const p = new URLSearchParams();
+    f.city.forEach(v => p.append("city", v));
+    f.type.forEach(v => p.append("type", v));
+    f.bhk.forEach(v => p.append("bhk", v));
+    f.furnishing.forEach(v => p.append("furnishing", v));
+    if (f.budgetMin) p.set("minPrice", f.budgetMin);
+    if (f.budgetMax) p.set("maxPrice", f.budgetMax);
+    if (f.areaMin) p.set("areaMin", f.areaMin);
+    if (f.areaMax) p.set("areaMax", f.areaMax);
+    if (f.keyword) p.set("q", f.keyword);
+    if (sort !== "newest") p.set("sortBy", sort);
+    if (page > 1) p.set("page", String(page));
+    window.history.replaceState(null, "", `/buy${p.toString() ? "?" + p.toString() : ""}`);
+  }, []);
 
-  const totalPages = Math.ceil(filteredProperties.length / ITEMS_PER_PAGE);
-  const paginatedProperties = filteredProperties.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
-  );
+  // Only fetch when APPLIED filters, sort, or page change
+  useEffect(() => {
+    fetchData(applied, sortBy, currentPage);
+  }, [applied, sortBy, currentPage, fetchData]);
 
+  // Browser back/forward
+  useEffect(() => {
+    const handlePop = () => {
+      const params = readInitialParams();
+      setPending(params.filters);
+      setApplied(params.filters);
+      setSortBy(params.sortBy);
+      setCurrentPage(params.page);
+    };
+    window.addEventListener("popstate", handlePop);
+    return () => window.removeEventListener("popstate", handlePop);
+  }, []);
+
+  // Called by filter sidebar checkboxes — only updates pending (no API)
   const handleFilterChange = (key, value) => {
-    setFilters((prev) => ({ ...prev, [key]: value }));
+    setPending(prev => ({ ...prev, [key]: value }));
+  };
+
+  // Called by "Apply Filters" button — commits pending → applied
+  const handleApplyFilters = () => {
+    setApplied(pending);
     setCurrentPage(1);
   };
 
+  // Called by "Clear All"
   const handleClearFilters = () => {
-    setFilters({
-      city: [],
-      type: [],
-      bhk: [],
-      budgetMin: "",
-      budgetMax: "",
-      areaMin: "",
-      areaMax: "",
-      furnishing: [],
-      postedBy: "",
-    });
+    setPending(EMPTY_FILTERS);
+    setApplied(EMPTY_FILTERS);
     setCurrentPage(1);
   };
 
   return (
     <div className={styles.buyPage}>
       <Header />
-
       <main className={styles.mainContent}>
-        {/* Page Header */}
         <div className={styles.pageHeader}>
           <div className={styles.breadcrumb}>
             <a href="/" className={styles.breadcrumbLink}>Home</a>
@@ -302,36 +141,15 @@ export default function BuyPage() {
           <div className={styles.pageHeaderInner}>
             <div>
               <h1 className={styles.pageTitle}>Buy Properties</h1>
-              <p className={styles.pageSubtitle}>
-                Discover {filteredProperties.length} verified properties for sale across top cities
-              </p>
+              <p className={styles.pageSubtitle}>{gridLoading ? "Searching..." : `${totalResults} properties found`}</p>
             </div>
           </div>
         </div>
-
-        {/* Content Area */}
         <div className={styles.contentLayout}>
-          <PropertyFilters
-            filters={filters}
-            onFilterChange={handleFilterChange}
-            onClearFilters={handleClearFilters}
-            resultCount={filteredProperties.length}
-          />
-
-          <PropertyGrid
-            properties={paginatedProperties}
-            viewMode={viewMode}
-            setViewMode={setViewMode}
-            sortBy={sortBy}
-            setSortBy={setSortBy}
-            currentPage={currentPage}
-            setCurrentPage={setCurrentPage}
-            totalPages={totalPages}
-            totalResults={filteredProperties.length}
-          />
+          <PropertyFilters filters={pending} onFilterChange={handleFilterChange} onApplyFilters={handleApplyFilters} onClearFilters={handleClearFilters} resultCount={totalResults} />
+          <PropertyGrid properties={properties} viewMode={viewMode} setViewMode={setViewMode} sortBy={sortBy} setSortBy={(v) => { setSortBy(v); setCurrentPage(1); }} currentPage={currentPage} setCurrentPage={setCurrentPage} totalPages={totalPages} totalResults={totalResults} />
         </div>
       </main>
-
       <Footer />
     </div>
   );

@@ -57,11 +57,17 @@ export default function ProfilePage() {
           <span className={styles.sidebarRole}>{isOwner ? "Property Owner" : "Buyer"}</span>
 
           <nav className={styles.sidebarNav}>
+            <Link href="/dashboard" className={styles.sidebarLink}>
+              <span className={styles.sidebarIcon}>📊</span> Dashboard
+            </Link>
             <Link href="/profile" className={`${styles.sidebarLink} ${styles.sidebarLinkActive}`}>
               <span className={styles.sidebarIcon}>👤</span> Profile
             </Link>
             <Link href="/wishlist" className={styles.sidebarLink}>
               <span className={styles.sidebarIcon}>❤️</span> Wishlist
+            </Link>
+            <Link href="/dashboard/my-enquiries" className={styles.sidebarLink}>
+              <span className={styles.sidebarIcon}>📋</span> My Enquiries
             </Link>
             {isOwner && (
               <>

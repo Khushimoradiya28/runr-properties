@@ -256,12 +256,31 @@
 
 /* Mobile apply bar — hidden on desktop */
 .mobileApplyBar {
-  display: none;
+  display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 16px 22px;
+  padding: 14px 22px;
   border-top: 1px solid rgba(30, 58, 95, 0.08);
   background: #ffffff;
+  position: sticky;
+  bottom: 0;
+  gap: 10px;
+}
+
+.clearAllBtn {
+  flex: 1;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(220, 38, 38, 0.15);
+  background: rgba(220, 38, 38, 0.04);
+  color: #dc2626;
+  font-weight: 600;
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.clearAllBtn:hover {
+  background: rgba(220, 38, 38, 0.1);
 }
 
 .mobileResultCount {

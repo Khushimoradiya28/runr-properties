@@ -1,40 +1,15 @@
-/**
- * ═══════════════════════════════════════════════════════════════
- * RUNR PROPERTIES - API SERVICE LAYER
- * ═══════════════════════════════════════════════════════════════
- * 
- * This file is the SINGLE source of truth for all API calls.
- * UI components should NEVER call fetch() directly or access localStorage.
- * They should only use AuthContext methods which internally call these functions.
- * 
- * WHEN BACKEND IS READY:
- * - Replace each function body with real fetch() calls
- * - Keep function signatures (params + return types) exactly the same
- * - The rest of the frontend will work without modification
- * 
- * BASE URL: Set NEXT_PUBLIC_API_URL in .env.local
- */
-
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
 
-// ─── Token Management (only place localStorage is used) ─────
 function saveToken(token) {
-  if (typeof window !== "undefined") {
-    localStorage.setItem("runr_token", token);
-  }
+  if (typeof window !== "undefined") localStorage.setItem("runr_token", token);
 }
-
 function getToken() {
   if (typeof window === "undefined") return null;
   return localStorage.getItem("runr_token");
 }
-
 function removeToken() {
-  if (typeof window !== "undefined") {
-    localStorage.removeItem("runr_token");
-  }
+  if (typeof window !== "undefined") localStorage.removeItem("runr_token");
 }
-
 function getHeaders() {
   const token = getToken();
   return {
@@ -43,468 +18,397 @@ function getHeaders() {
   };
 }
 
+async function request(url, options = {}) {
+  try {
+    const res = await fetch(url, options);
+    const data = await res.json();
+    return data;
+  } catch (err) {
+    return { success: false, message: "Network error. Please try again." };
+  }
+}
+
 // ═══════════════════════════════════════════════════════════════
-// AUTH APIs
+// AUTH (Connected to backend)
 // ═══════════════════════════════════════════════════════════════
 
-/**
- * POST /api/auth/signup
- * @param {{ name: string, email: string, mobile: string, password: string, role: 'buyer'|'owner' }}
- * @returns {{ success: boolean, message: string, user?: object, token?: string }}
- */
-export async function signupUser({ name, email, mobile, password, role }) {
-  // TODO: Replace with real API call
-  // const res = await fetch(`${API_BASE}/auth/signup`, {
-  //   method: "POST",
-  //   headers: { "Content-Type": "application/json" },
-  //   body: JSON.stringify({ name, email, mobile, password, role }),
-  // });
-  // const data = await res.json();
-  // if (data.success) saveToken(data.token);
-  // return data;
+export async function signupUser(payload) {
+  const data = await request(`${API_BASE}/auth/signup`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
 
-  // MOCK Implementation
-  const users = JSON.parse(localStorage.getItem("runr_users") || "[]");
-  if (users.find((u) => u.email === email)) {
-    return { success: false, message: "Email already registered" };
+  if (data.success) {
+    const token = data.data?.token || data.token;
+    const user = data.data?.user || data.user;
+
+    if (token) saveToken(token);
+
+    return {
+      success: true,
+      user,
+      token,
+      message: data.message,
+    };
   }
 
-  const newUser = { id: Date.now().toString(), name, email, mobile, role, createdAt: new Date().toISOString() };
-  users.push({ ...newUser, password });
-  localStorage.setItem("runr_users", JSON.stringify(users));
-
-  const token = btoa(JSON.stringify({ id: newUser.id, email, role }));
-  saveToken(token);
-  return { success: true, message: "Account created successfully", user: newUser, token };
+  return data;
 }
 
-/**
- * POST /api/auth/login
- * @param {{ email: string, password: string }}
- * @returns {{ success: boolean, message: string, user?: object, token?: string }}
- */
 export async function loginUser({ email, password }) {
-  // TODO: Replace with real API call
-  // const res = await fetch(`${API_BASE}/auth/login`, {
-  //   method: "POST",
-  //   headers: { "Content-Type": "application/json" },
-  //   body: JSON.stringify({ email, password }),
-  // });
-  // const data = await res.json();
-  // if (data.success) saveToken(data.token);
-  // return data;
+  const data = await request(`${API_BASE}/auth/login`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password }),
+  });
 
-  // MOCK
-  const users = JSON.parse(localStorage.getItem("runr_users") || "[]");
-  const user = users.find((u) => u.email === email && u.password === password);
-  if (!user) return { success: false, message: "Invalid email or password" };
+  if (data.success) {
+    const token = data.data?.token || data.token;
+    const user = data.data?.user || data.user;
 
-  const { password: _, ...userData } = user;
-  const token = btoa(JSON.stringify({ id: userData.id, email: userData.email, role: userData.role }));
-  saveToken(token);
-  return { success: true, message: "Login successful", user: userData, token };
+    if (token) saveToken(token);
+
+    return {
+      success: true,
+      user,
+      token,
+      message: data.message,
+    };
+  }
+
+  return data;
 }
 
-/**
- * Logout - clear token
- */
 export function logoutUser() {
   removeToken();
 }
 
-/**
- * GET /api/auth/me
- * Uses stored token to fetch current user
- * @returns {{ success: boolean, user?: object }}
- */
 export async function getCurrentUser() {
-  // TODO: Replace with real API call
-  // const res = await fetch(`${API_BASE}/auth/me`, { headers: getHeaders() });
-  // if (!res.ok) return { success: false, user: null };
-  // const data = await res.json();
-  // return data;
-
-  // MOCK
   const token = getToken();
   if (!token) return { success: false, user: null };
-
-  try {
-    const decoded = JSON.parse(atob(token));
-    const users = JSON.parse(localStorage.getItem("runr_users") || "[]");
-    const user = users.find((u) => u.id === decoded.id);
-    if (!user) return { success: false, user: null };
-    const { password: _, ...userData } = user;
-    return { success: true, user: userData };
-  } catch {
-    return { success: false, user: null };
-  }
+  const data = await request(`${API_BASE}/auth/me`, { headers: getHeaders() });
+  if (data.success && data.data)
+    return { success: true, user: data.data.user || data.data };
+  return data;
 }
 
-/**
- * PUT /api/auth/profile
- * @param {{ name: string, mobile: string }}
- * @returns {{ success: boolean, message: string, user?: object }}
- */
 export async function updateProfile({ name, mobile }) {
-  // TODO: Replace with real API call
-  // const res = await fetch(`${API_BASE}/auth/profile`, {
-  //   method: "PUT",
-  //   headers: getHeaders(),
-  //   body: JSON.stringify({ name, mobile }),
-  // });
-  // return await res.json();
-
-  // MOCK
-  const token = getToken();
-  if (!token) return { success: false, message: "Not authenticated" };
-
-  const decoded = JSON.parse(atob(token));
-  const users = JSON.parse(localStorage.getItem("runr_users") || "[]");
-  const idx = users.findIndex((u) => u.id === decoded.id);
-  if (idx === -1) return { success: false, message: "User not found" };
-
-  users[idx] = { ...users[idx], name, mobile };
-  localStorage.setItem("runr_users", JSON.stringify(users));
-  const { password: _, ...userData } = users[idx];
-  return { success: true, message: "Profile updated", user: userData };
+  return await request(`${API_BASE}/auth/profile`, {
+    method: "PUT",
+    headers: getHeaders(),
+    body: JSON.stringify({ name, mobile }),
+  });
 }
 
-/**
- * PUT /api/auth/change-password
- * @param {{ currentPassword: string, newPassword: string }}
- * @returns {{ success: boolean, message: string }}
- */
 export async function changePassword({ currentPassword, newPassword }) {
-  // TODO: Replace with real API call
-  // const res = await fetch(`${API_BASE}/auth/change-password`, {
-  //   method: "PUT",
-  //   headers: getHeaders(),
-  //   body: JSON.stringify({ currentPassword, newPassword }),
-  // });
-  // return await res.json();
-
-  // MOCK
-  const token = getToken();
-  if (!token) return { success: false, message: "Not authenticated" };
-
-  const decoded = JSON.parse(atob(token));
-  const users = JSON.parse(localStorage.getItem("runr_users") || "[]");
-  const idx = users.findIndex((u) => u.id === decoded.id);
-  if (idx === -1) return { success: false, message: "User not found" };
-  if (users[idx].password !== currentPassword) return { success: false, message: "Current password is incorrect" };
-
-  users[idx].password = newPassword;
-  localStorage.setItem("runr_users", JSON.stringify(users));
-  return { success: true, message: "Password changed successfully" };
+  return await request(`${API_BASE}/auth/change-password`, {
+    method: "PUT",
+    headers: getHeaders(),
+    body: JSON.stringify({ currentPassword, newPassword }),
+  });
 }
 
-/**
- * POST /api/auth/forgot-password
- * Sends reset link to email
- * @param {{ email: string }}
- * @returns {{ success: boolean, message: string }}
- */
 export async function forgotPassword({ email }) {
-  // TODO: Replace with real API call
-  // const res = await fetch(`${API_BASE}/auth/forgot-password`, {
-  //   method: "POST",
-  //   headers: { "Content-Type": "application/json" },
-  //   body: JSON.stringify({ email }),
-  // });
-  // return await res.json();
-
-  // MOCK
-  const users = JSON.parse(localStorage.getItem("runr_users") || "[]");
-  if (!users.find((u) => u.email === email)) {
-    return { success: false, message: "No account found with this email" };
-  }
-  return { success: true, message: "Password reset link sent to your email" };
+  return await request(`${API_BASE}/auth/forgot-password`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email }),
+  });
 }
 
-/**
- * POST /api/auth/reset-password
- * Resets password using token from email link
- * @param {{ token: string, newPassword: string }}
- * @returns {{ success: boolean, message: string }}
- */
 export async function resetPassword({ token, newPassword }) {
-  // TODO: Replace with real API call
-  // const res = await fetch(`${API_BASE}/auth/reset-password`, {
-  //   method: "POST",
-  //   headers: { "Content-Type": "application/json" },
-  //   body: JSON.stringify({ token, newPassword }),
-  // });
-  // return await res.json();
-
-  // MOCK - In real app, token would be validated by backend
-  return { success: true, message: "Password reset successful. You can now login with your new password." };
+  return await request(`${API_BASE}/auth/reset-password/${token}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ password: newPassword }),
+  });
 }
 
 // ═══════════════════════════════════════════════════════════════
-// WISHLIST APIs
+// WISHLIST (Connected to backend)
 // ═══════════════════════════════════════════════════════════════
 
-/**
- * GET /api/wishlist
- * @returns {{ success: boolean, wishlist: array }}
- */
 export async function getWishlist() {
-  // TODO: Replace with real API call
-  // const res = await fetch(`${API_BASE}/wishlist`, { headers: getHeaders() });
-  // return await res.json();
-
-  // MOCK
-  const data = localStorage.getItem("runr_wishlist");
-  return { success: true, wishlist: data ? JSON.parse(data) : [] };
-}
-
-/**
- * POST /api/wishlist
- * @param {{ property: object }}
- * @returns {{ success: boolean, message: string }}
- */
-export async function addToWishlistAPI(property) {
-  // TODO: Replace with real API call
-  // const res = await fetch(`${API_BASE}/wishlist`, {
-  //   method: "POST",
-  //   headers: getHeaders(),
-  //   body: JSON.stringify({ propertyId: property.id }),
-  // });
-  // return await res.json();
-
-  // MOCK
-  const wishlist = JSON.parse(localStorage.getItem("runr_wishlist") || "[]");
-  if (!wishlist.find((p) => p.id === property.id)) {
-    wishlist.push(property);
-    localStorage.setItem("runr_wishlist", JSON.stringify(wishlist));
+  const data = await request(`${API_BASE}/wishlist`, { headers: getHeaders() });
+  if (data.success) {
+    const raw = data.data || data.wishlist || [];
+    const mapped = raw.map((item) => {
+      const prop = item.property || item;
+      return mapProperty(prop);
+    });
+    return { success: true, wishlist: mapped };
   }
-  return { success: true, message: "Added to wishlist" };
+  return { success: true, wishlist: [] };
 }
 
-/**
- * DELETE /api/wishlist/:propertyId
- * @param {string} propertyId
- * @returns {{ success: boolean, message: string }}
- */
+export async function addToWishlistAPI(property) {
+  return await request(`${API_BASE}/wishlist/add`, {
+    method: "POST",
+    headers: getHeaders(),
+    body: JSON.stringify({
+      propertyId: property.id,
+    }),
+  });
+}
+
 export async function removeFromWishlistAPI(propertyId) {
-  // TODO: Replace with real API call
-  // const res = await fetch(`${API_BASE}/wishlist/${propertyId}`, {
-  //   method: "DELETE",
-  //   headers: getHeaders(),
-  // });
-  // return await res.json();
-
-  // MOCK
-  const wishlist = JSON.parse(localStorage.getItem("runr_wishlist") || "[]");
-  const filtered = wishlist.filter((p) => p.id !== propertyId);
-  localStorage.setItem("runr_wishlist", JSON.stringify(filtered));
-  return { success: true, message: "Removed from wishlist" };
+  return await request(`${API_BASE}/wishlist/${propertyId}`, {
+    method: "DELETE",
+    headers: getHeaders(),
+  });
 }
 
-/**
- * DELETE /api/wishlist (clear all)
- * @returns {{ success: boolean, message: string }}
- */
 export async function clearWishlistAPI() {
-  // TODO: Replace with real API call
-  // const res = await fetch(`${API_BASE}/wishlist`, {
-  //   method: "DELETE",
-  //   headers: getHeaders(),
-  // });
-  // return await res.json();
-
-  // MOCK
-  localStorage.setItem("runr_wishlist", "[]");
-  return { success: true, message: "Wishlist cleared" };
+  return await request(`${API_BASE}/wishlist`, {
+    method: "DELETE",
+    headers: getHeaders(),
+  });
 }
 
 // ═══════════════════════════════════════════════════════════════
-// PROPERTY APIs (for Owner)
+// PROPERTIES - Owner (Connected to backend)
 // ═══════════════════════════════════════════════════════════════
 
-/**
- * GET /api/properties/my
- * Get owner's own properties
- * @returns {{ success: boolean, properties: array }}
- */
 export async function getMyProperties() {
-  // TODO: Replace with real API call
-  // const res = await fetch(`${API_BASE}/properties/my`, { headers: getHeaders() });
-  // return await res.json();
-
-  // MOCK
-  const token = getToken();
-  if (!token) return { success: false, properties: [] };
-  const decoded = JSON.parse(atob(token));
-  const allProps = JSON.parse(localStorage.getItem("runr_my_properties") || "[]");
-  return { success: true, properties: allProps.filter((p) => p.ownerId === decoded.id) };
+  const data = await request(`${API_BASE}/properties/my`, { headers: getHeaders() });
+  if (data.success) {
+    const raw = data.data || data.properties || [];
+    return { success: true, properties: raw.map(mapProperty) };
+  }
+  return { success: false, properties: [] };
 }
 
-/**
- * POST /api/properties
- * Owner adds a new property
- * @param {object} propertyData
- * @returns {{ success: boolean, message: string, property?: object }}
- */
 export async function addProperty(propertyData) {
-  // TODO: Replace with real API call
-  // const res = await fetch(`${API_BASE}/properties`, {
-  //   method: "POST",
-  //   headers: getHeaders(),
-  //   body: JSON.stringify(propertyData),
-  // });
-  // return await res.json();
+  const furnishingMap = {
+    "unfurnished": "Unfurnished",
+    "semi-furnished": "Semi Furnished",
+    "furnished": "Fully Furnished",
+    "Unfurnished": "Unfurnished",
+    "Semi Furnished": "Semi Furnished",
+    "Fully Furnished": "Fully Furnished",
+  };
 
-  // MOCK
-  const token = getToken();
-  if (!token) return { success: false, message: "Not authenticated" };
-  const decoded = JSON.parse(atob(token));
-  if (decoded.role !== "owner") return { success: false, message: "Only owners can add properties" };
+  const typeMap = {
+    "apartment": "Apartment",
+    "villa": "Villa",
+    "plot": "Plot",
+    "commercial": "Office",
+    "office": "Office",
+    "shop": "Shop",
+    "studio": "Studio",
+    "penthouse": "Penthouse",
+    "farmhouse": "Farmhouse",
+    "other": "Other",
+    "Apartment": "Apartment",
+    "Villa": "Villa",
+    "Plot": "Plot",
+    "Office": "Office",
+    "Shop": "Shop",
+    "Studio": "Studio",
+    "Penthouse": "Penthouse",
+    "Farmhouse": "Farmhouse",
+    "Other": "Other",
+  };
 
-  const newProp = { ...propertyData, id: Date.now().toString(), ownerId: decoded.id, createdAt: new Date().toISOString() };
-  const allProps = JSON.parse(localStorage.getItem("runr_my_properties") || "[]");
-  allProps.push(newProp);
-  localStorage.setItem("runr_my_properties", JSON.stringify(allProps));
-  return { success: true, message: "Property added successfully", property: newProp };
+  const rawType = propertyData.type || propertyData.propertyType || "Apartment";
+  const rawFurnishing = propertyData.furnishing || "";
+
+  const formData = new FormData();
+  formData.append('title', propertyData.title || "");
+  formData.append('propertyType', typeMap[rawType] || "Apartment");
+  formData.append('category', propertyData.category || "Residential");
+  formData.append('listingType', propertyData.listingType || "buy");
+  formData.append('city', propertyData.city || "");
+  formData.append('locality', propertyData.location || propertyData.locality || "");
+  formData.append('address', propertyData.address || propertyData.location || "");
+  formData.append('bedrooms', parseInt(propertyData.bhk || propertyData.bedrooms || 0));
+  formData.append('bathrooms', parseInt(propertyData.bathrooms || 0));
+  formData.append('area', parseInt(propertyData.area || 0));
+  formData.append('furnishing', furnishingMap[rawFurnishing] || "");
+  formData.append('parking', propertyData.parking || "");
+  formData.append('description', propertyData.description || "");
+  formData.append('price', parseInt(propertyData.price || 0));
+  formData.append('featured', propertyData.featured || false);
+
+  if (propertyData.amenities) {
+    formData.append('amenities', JSON.stringify(propertyData.amenities));
+  }
+
+  if (propertyData.imageFile) {
+    formData.append('image', propertyData.imageFile);
+  } else if (propertyData.image && !propertyData.image.startsWith("blob:")) {
+    const backendUrl = API_BASE.replace(/\/api\/?$/, '');
+    const relativeImage = propertyData.image.replace(backendUrl, '');
+    formData.append('images', JSON.stringify([relativeImage]));
+  }
+
+  const headers = getHeaders();
+  delete headers["Content-Type"];
+
+  return await request(`${API_BASE}/properties`, {
+    method: "POST",
+    headers,
+    body: formData,
+  });
 }
 
-/**
- * PUT /api/properties/:id
- * Owner edits own property
- * @param {string} propertyId
- * @param {object} updates
- * @returns {{ success: boolean, message: string, property?: object }}
- */
 export async function updateProperty(propertyId, updates) {
-  // TODO: Replace with real API call
-  // const res = await fetch(`${API_BASE}/properties/${propertyId}`, {
-  //   method: "PUT",
-  //   headers: getHeaders(),
-  //   body: JSON.stringify(updates),
-  // });
-  // return await res.json();
+  const furnishingMap = { "unfurnished": "Unfurnished", "semi-furnished": "Semi Furnished", "furnished": "Fully Furnished", "Unfurnished": "Unfurnished", "Semi Furnished": "Semi Furnished", "Fully Furnished": "Fully Furnished" };
+  const typeMap = { "apartment": "Apartment", "villa": "Villa", "plot": "Plot", "commercial": "Office", "Apartment": "Apartment", "Villa": "Villa", "Plot": "Plot", "Office": "Office", "Shop": "Shop", "Studio": "Studio", "Penthouse": "Penthouse", "Farmhouse": "Farmhouse", "Other": "Other" };
 
-  // MOCK
-  const allProps = JSON.parse(localStorage.getItem("runr_my_properties") || "[]");
-  const idx = allProps.findIndex((p) => p.id === propertyId);
-  if (idx === -1) return { success: false, message: "Property not found" };
-  allProps[idx] = { ...allProps[idx], ...updates };
-  localStorage.setItem("runr_my_properties", JSON.stringify(allProps));
-  return { success: true, message: "Property updated", property: allProps[idx] };
+  const formData = new FormData();
+  if (updates.title) formData.append('title', updates.title);
+  if (updates.type || updates.propertyType) formData.append('propertyType', typeMap[updates.type || updates.propertyType] || updates.type);
+  if (updates.category) formData.append('category', updates.category);
+  if (updates.listingType) formData.append('listingType', updates.listingType);
+  if (updates.city) formData.append('city', updates.city);
+  if (updates.location || updates.locality) formData.append('locality', updates.location || updates.locality);
+  if (updates.address || updates.location) formData.append('address', updates.address || updates.location);
+  if (updates.bhk !== undefined || updates.bedrooms !== undefined) formData.append('bedrooms', parseInt(updates.bhk || updates.bedrooms || 0));
+  if (updates.bathrooms !== undefined) formData.append('bathrooms', parseInt(updates.bathrooms || 0));
+  if (updates.area) formData.append('area', parseInt(updates.area));
+  if (updates.furnishing !== undefined) formData.append('furnishing', furnishingMap[updates.furnishing] || updates.furnishing);
+  if (updates.parking !== undefined) formData.append('parking', updates.parking);
+  if (updates.description !== undefined) formData.append('description', updates.description);
+  if (updates.price) formData.append('price', parseInt(updates.price));
+  if (updates.featured !== undefined) formData.append('featured', updates.featured);
+
+  if (updates.amenities) {
+    formData.append('amenities', JSON.stringify(updates.amenities));
+  }
+
+  if (updates.imageFile) {
+    formData.append('image', updates.imageFile);
+  } else if (updates.image && !updates.image.startsWith("blob:")) {
+    const backendUrl = API_BASE.replace(/\/api\/?$/, '');
+    const relativeImage = updates.image.replace(backendUrl, '');
+    formData.append('images', JSON.stringify([relativeImage]));
+  }
+
+  const headers = getHeaders();
+  delete headers["Content-Type"];
+
+  return await request(`${API_BASE}/properties/${propertyId}`, {
+    method: "PUT",
+    headers,
+    body: formData,
+  });
 }
 
-/**
- * DELETE /api/properties/:id
- * Owner deletes own property
- * @param {string} propertyId
- * @returns {{ success: boolean, message: string }}
- */
 export async function deleteProperty(propertyId) {
-  // TODO: Replace with real API call
-  // const res = await fetch(`${API_BASE}/properties/${propertyId}`, {
-  //   method: "DELETE",
-  //   headers: getHeaders(),
-  // });
-  // return await res.json();
-
-  // MOCK
-  const allProps = JSON.parse(localStorage.getItem("runr_my_properties") || "[]");
-  const filtered = allProps.filter((p) => p.id !== propertyId);
-  localStorage.setItem("runr_my_properties", JSON.stringify(filtered));
-  return { success: true, message: "Property deleted" };
+  return await request(`${API_BASE}/properties/${propertyId}`, {
+    method: "DELETE",
+    headers: getHeaders(),
+  });
 }
 
 // ═══════════════════════════════════════════════════════════════
-// PUBLIC PROPERTY APIs (for listing pages)
+// PUBLIC PROPERTIES (Connected to backend)
 // ═══════════════════════════════════════════════════════════════
 
-/**
- * GET /api/properties?type=buy&city=...&bhk=...
- * Public property search
- * @param {object} filters
- * @returns {{ success: boolean, properties: array, total: number }}
- */
 export async function searchProperties(filters = {}) {
-  // TODO: Replace with real API call
-  // const params = new URLSearchParams(filters);
-  // const res = await fetch(`${API_BASE}/properties?${params}`);
-  // return await res.json();
-
-  // MOCK - returns empty (actual data is hardcoded in page.js for now)
-  return { success: true, properties: [], total: 0 };
+  const params = new URLSearchParams();
+  Object.entries(filters).forEach(([key, val]) => {
+    if (val !== "" && val !== undefined && val !== null) params.set(key, val);
+  });
+  // Use search endpoint if keyword present
+  const endpoint = filters.q ? `${API_BASE}/properties/search` : `${API_BASE}/properties`;
+  const data = await request(`${endpoint}?${params.toString()}`);
+  if (data.success) {
+    const properties = data.data || [];
+    return {
+      success: true,
+      properties: properties.map(mapProperty),
+      total: data.pagination?.total || properties.length,
+      pagination: data.pagination,
+    };
+  }
+  return data;
 }
 
-/**
- * GET /api/properties/:id
- * Single property detail
- * @param {string} propertyId
- * @returns {{ success: boolean, property?: object }}
- */
 export async function getPropertyById(propertyId) {
-  // TODO: Replace with real API call
-  // const res = await fetch(`${API_BASE}/properties/${propertyId}`);
-  // return await res.json();
-
-  // MOCK
-  return { success: false, property: null };
+  const data = await request(`${API_BASE}/properties/${propertyId}`);
+  if (data.success) {
+    const raw = data.data || data.property;
+    if (raw) return { success: true, property: mapProperty(raw) };
+  }
+  return data;
 }
 
+export async function getFeaturedProperties() {
+  const properties = data.data || [];
+
+  return {
+    success: true,
+    properties: properties.map(mapProperty),
+  };
+}
+
+// Maps backend property shape to frontend expected shape
+function mapProperty(p) {
+  const getImageUrl = (url) => {
+    if (!url) return "/img/buy-properties/1.jpg";
+    if (url.startsWith('/uploads')) {
+      const backendUrl = API_BASE.replace(/\/api\/?$/, '');
+      return `${backendUrl}${url}`;
+    }
+    return url;
+  };
+
+  const images = p.images || [];
+  const imageUrls = images.map(getImageUrl);
+
+  const ownerData = (p.owner && typeof p.owner === "object") ? p.owner : null;
+
+  return {
+    id: p._id || p.id,
+    slug: p.slug || "",
+    ownerId: ownerData ? (ownerData._id || ownerData.id || "") : (p.owner || ""),
+    owner: ownerData ? { name: ownerData.name || "", email: ownerData.email || "", mobile: ownerData.mobile || "" } : null,
+    title: p.title || "",
+    type: p.propertyType || p.category || "apartment",
+    category: p.category || "Residential",
+    listingType: p.listingType || "buy",
+    price: p.price || 0,
+    rent: p.listingType === "rent" ? p.price : 0,
+    deposit: p.deposit || 0,
+    city: p.city || "",
+    location: p.locality || p.address || "",
+    address: p.address || "",
+    bhk: p.bedrooms || 0,
+    bathrooms: p.bathrooms || 0,
+    area: p.area || 0,
+    furnishing: p.furnishing || "unfurnished",
+    parking: p.parking || "",
+    description: p.description || "",
+    amenities: p.amenities || [],
+    image: imageUrls.length > 0 ? imageUrls[0] : "/img/buy-properties/1.jpg",
+    images: imageUrls,
+    featured: p.featured || false,
+    status: p.status || "active",
+    postedBy: p.postedBy || "owner",
+    postedDate: p.createdAt || new Date().toISOString(),
+    availableFrom: p.availableFrom || p.createdAt || new Date().toISOString(),
+  };
+}
 
 // ═══════════════════════════════════════════════════════════════
-// HOME PAGE / PUBLIC DATA APIs
+// TODO: Not yet implemented on backend - keeping mock/placeholder
 // ═══════════════════════════════════════════════════════════════
 
-/**
- * GET /api/home
- * Fetches home page data (banner, featured, cities, blogs)
- * @returns {{ success: boolean, banner: object, featured: array, cities: array, blogs: array }}
- */
+// TODO: Implement /api/home endpoint
 export async function getHomeData() {
-  // TODO: Replace with real API call
-  // const res = await fetch(`${API_BASE}/home`);
-  // return await res.json();
-
-  // MOCK
   return { success: true, banner: null, featured: [], cities: [], blogs: [] };
 }
 
-/**
- * GET /api/properties/featured
- * @returns {{ success: boolean, properties: array }}
- */
-export async function getFeaturedProperties() {
-  // TODO: Replace with real API call
-  // const res = await fetch(`${API_BASE}/properties/featured`);
-  // return await res.json();
-
-  // MOCK
-  return { success: true, properties: [] };
-}
-
-/**
- * GET /api/cities
- * @returns {{ success: boolean, cities: array }}
- */
+// TODO: Implement /api/cities endpoint
 export async function getCities() {
-  // TODO: Replace with real API call
-  // const res = await fetch(`${API_BASE}/cities`);
-  // return await res.json();
-
-  // MOCK
   return { success: true, cities: [] };
 }
 
-/**
- * GET /api/filters
- * Returns available filter options (cities, types, bhk options, etc.)
- * @returns {{ success: boolean, cities: array, types: array, bhkOptions: array, furnishingOptions: array }}
- */
+// TODO: Implement /api/filters endpoint
 export async function getFilterOptions() {
-  // TODO: Replace with real API call
-  // const res = await fetch(`${API_BASE}/filters`);
-  // return await res.json();
-
-  // MOCK
   return {
     success: true,
     cities: [],
@@ -515,60 +419,68 @@ export async function getFilterOptions() {
 }
 
 // ═══════════════════════════════════════════════════════════════
-// CONTACT / INQUIRY APIs
+// ENQUIRIES (Connected to backend)
 // ═══════════════════════════════════════════════════════════════
 
-/**
- * POST /api/contact/owner
- * Send inquiry to property owner
- * @param {{ propertyId: string, name: string, email: string, phone: string, message: string }}
- * @returns {{ success: boolean, message: string }}
- */
 export async function contactOwner({ propertyId, name, email, phone, message }) {
-  // TODO: Replace with real API call
-  // const res = await fetch(`${API_BASE}/contact/owner`, {
-  //   method: "POST",
-  //   headers: getHeaders(),
-  //   body: JSON.stringify({ propertyId, name, email, phone, message }),
-  // });
-  // return await res.json();
-
-  // MOCK
-  return { success: true, message: "Your inquiry has been sent to the property owner" };
+  return await request(`${API_BASE}/enquiries`, {
+    method: "POST",
+    headers: getHeaders(),
+    body: JSON.stringify({
+      property: propertyId,
+      name,
+      email,
+      mobile: phone,
+      message,
+    }),
+  });
 }
 
-// ═══════════════════════════════════════════════════════════════
-// REVIEWS APIs
-// ═══════════════════════════════════════════════════════════════
+export async function getMyEnquiries() {
+  const data = await request(`${API_BASE}/enquiries/my`, { headers: getHeaders() });
+  if (data.success) {
+    return { success: true, enquiries: data.data || [] };
+  }
+  return { success: false, enquiries: [] };
+}
 
-/**
- * GET /api/reviews?propertyId=...
- * @param {string} propertyId
- * @returns {{ success: boolean, reviews: array }}
- */
+export async function getReceivedEnquiries() {
+  const data = await request(`${API_BASE}/enquiries/received`, { headers: getHeaders() });
+  if (data.success) {
+    return { success: true, enquiries: data.data || [] };
+  }
+  return { success: false, enquiries: [] };
+}
+
+export async function updateEnquiryStatus(enquiryId, status) {
+  return await request(`${API_BASE}/enquiries/${enquiryId}/status`, {
+    method: "PUT",
+    headers: getHeaders(),
+    body: JSON.stringify({ status }),
+  });
+}
+
+export async function deleteEnquiry(enquiryId) {
+  return await request(`${API_BASE}/enquiries/${enquiryId}`, {
+    method: "DELETE",
+    headers: getHeaders(),
+  });
+}
+
+// TODO: Implement /api/reviews endpoints
 export async function getReviews(propertyId) {
-  // TODO: Replace with real API call
-  // const res = await fetch(`${API_BASE}/reviews?propertyId=${propertyId}`);
-  // return await res.json();
-
-  // MOCK
   return { success: true, reviews: [] };
 }
 
-/**
- * POST /api/reviews
- * @param {{ propertyId: string, rating: number, comment: string }}
- * @returns {{ success: boolean, message: string, review?: object }}
- */
 export async function addReview({ propertyId, rating, comment }) {
-  // TODO: Replace with real API call
-  // const res = await fetch(`${API_BASE}/reviews`, {
-  //   method: "POST",
-  //   headers: getHeaders(),
-  //   body: JSON.stringify({ propertyId, rating, comment }),
-  // });
-  // return await res.json();
-
-  // MOCK
-  return { success: true, message: "Review submitted successfully", review: { propertyId, rating, comment, createdAt: new Date().toISOString() } };
+  return {
+    success: true,
+    message: "Review submitted",
+    review: {
+      propertyId,
+      rating,
+      comment,
+      createdAt: new Date().toISOString(),
+    },
+  };
 }

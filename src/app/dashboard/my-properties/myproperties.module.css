@@ -21,8 +21,8 @@
 .propList { display: flex; flex-direction: column; gap: 14px; }
 .propCard { display: flex; align-items: center; gap: 20px; background: #ffffff; border-radius: 18px; border: 1px solid rgba(30,58,95,0.08); padding: 16px 20px; box-shadow: 0 6px 20px rgba(30,58,95,0.04); transition: box-shadow 0.2s ease; }
 .propCard:hover { box-shadow: 0 12px 32px rgba(30,58,95,0.08); }
-.propImage { width: 130px; height: 90px; border-radius: 12px; overflow: hidden; flex-shrink: 0; background: #f3f6fb; position: relative; }
-.propImage img { width: 100%; height: 100%; object-fit: cover; }
+.propImage { width: 200px; height: 140px; border-radius: 12px; overflow: hidden; flex-shrink: 0; background: #f3f6fb; position: relative; }
+.propImage img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .propBadge { position: absolute; top: 6px; left: 6px; padding: 3px 8px; border-radius: 5px; background: #1e3a5f; color: #fff; font-size: 0.65rem; font-weight: 700; }
 .propInfo { flex: 1; min-width: 0; }
 .propTitle { margin: 0 0 4px; font-size: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }

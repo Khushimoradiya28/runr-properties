@@ -8,9 +8,11 @@ import styles from "./contact.module.css";
 export default function ContactPage() {
   const [formData, setFormData] = useState({ name: "", email: "", phone: "", subject: "", message: "" });
 
+  const [showSuccess, setShowSuccess] = useState(false);
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert("Thank you! We will get back to you soon.");
+    setShowSuccess(true);
     setFormData({ name: "", email: "", phone: "", subject: "", message: "" });
   };
 
@@ -104,6 +106,17 @@ export default function ContactPage() {
       </main>
 
       <Footer />
+
+      {showSuccess && (
+        <div style={{position:"fixed",inset:0,background:"rgba(15,31,61,0.5)",backdropFilter:"blur(4px)",zIndex:9000,display:"flex",alignItems:"center",justifyContent:"center",padding:"20px"}}>
+          <div style={{background:"#fff",borderRadius:"20px",padding:"36px 32px",maxWidth:"420px",width:"100%",textAlign:"center",boxShadow:"0 24px 64px rgba(30,58,95,0.2)"}}>
+            <div style={{fontSize:"3rem",marginBottom:"16px"}}>✓</div>
+            <h3 style={{margin:"0 0 12px",fontSize:"1.2rem",color:"#10203b"}}>Thank You!</h3>
+            <p style={{margin:"0 0 24px",color:"#5a6f85",fontSize:"0.92rem",lineHeight:"1.6"}}>Your information has been sent successfully. Our team will contact you shortly.</p>
+            <button onClick={() => setShowSuccess(false)} style={{padding:"12px 28px",borderRadius:"12px",border:"none",background:"linear-gradient(135deg,#3fa66b,#2f8f58)",color:"#fff",fontWeight:700,fontSize:"0.9rem",cursor:"pointer"}}>OK</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

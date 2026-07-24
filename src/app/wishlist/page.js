@@ -23,7 +23,7 @@ function capitalizeFirst(str) {
 
 export default function WishlistPage() {
   const { wishlist, removeFromWishlist, clearWishlist } = useWishlist();
-
+  console.log("Wishlist Data:", wishlist);
   return (
     <div className={styles.wishlistPage}>
       <Header />

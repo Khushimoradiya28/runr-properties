@@ -1,43 +1,43 @@
 "use client";
 
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useWishlist } from "../../context/WishlistContext";
+import EnquiryModal from "../../components/EnquiryModal";
 import styles from "./RentPropertyCard.module.css";
 
 function formatRent(rent) {
+  if (!rent) return "₹ 0";
   return `₹ ${rent.toLocaleString("en-IN")}`;
 }
 
-function formatDate(dateStr) {
-  const date = new Date(dateStr);
-  return date.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
-}
-
 function capitalizeFirst(str) {
+  if (!str) return "";
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 export default function RentPropertyCard({ property, viewMode }) {
   const { isInWishlist, toggleWishlist } = useWishlist();
+  const [showEnquiry, setShowEnquiry] = useState(false);
   const liked = isInWishlist(property.id);
   const isListView = viewMode === "list";
 
   return (
-    <article className={`${styles.card} ${isListView ? styles.cardList : ""}`}>
+    <article className={`${styles.card} ${isListView ? styles.cardList : ""}`} onClick={() => router.push(`/property/${property.id}`)} style={{ cursor: "pointer" }}>
       <div className={styles.cardImageWrap}>
         <div className={styles.cardImage}>
           <img src={property.image} alt={property.title} className={styles.cardImg} loading="lazy" />
         </div>
         <div className={styles.badgeRow}>
           <span className={styles.badgeType}>{capitalizeFirst(property.type)}</span>
-          {property.furnishing !== "unfurnished" && (
-            <span className={styles.badgeFurnish}>
-              {property.furnishing === "furnished" ? "Furnished" : "Semi-Furnished"}
-            </span>
+          {property.furnishing && property.furnishing.toLowerCase() !== "unfurnished" && property.furnishing !== "" && (
+            <span className={styles.badgeFurnish}>{property.furnishing}</span>
           )}
         </div>
         <button
           className={`${styles.likeBtn} ${liked ? styles.liked : ""}`}
-          onClick={() => toggleWishlist(property)}
+          onClick={(e) => { e.stopPropagation(); toggleWishlist(property); }}
           aria-label={liked ? "Remove from wishlist" : "Add to wishlist"}
           aria-pressed={liked}
         >
@@ -60,17 +60,18 @@ export default function RentPropertyCard({ property, viewMode }) {
               <path d="M12 21s-6.2-5.2-8.4-9.1A5.6 5.6 0 0 1 12 4.6a5.6 5.6 0 0 1 8.4 7.3C18.2 15.8 12 21 12 21Z" stroke="currentColor" strokeWidth="1.4" fill="none" />
               <circle cx="12" cy="11.2" r="2" stroke="currentColor" strokeWidth="1.4" fill="none" />
             </svg>
-            {property.location}
+            {property.location}{property.city ? `, ${property.city}` : ""}
           </p>
         </div>
 
         <div className={styles.cardDetails}>
           {property.bhk > 0 && <span className={styles.detailItem}>{property.bhk} BHK</span>}
-          <span className={styles.detailItem}>{property.area.toLocaleString("en-IN")} Sq.Ft.</span>
-          <span className={styles.detailItem}>Available: {formatDate(property.availableFrom)}</span>
+          {property.bathrooms > 0 && <span className={styles.detailItem}>{property.bathrooms} Bath</span>}
+          {property.area > 0 && <span className={styles.detailItem}>{property.area.toLocaleString("en-IN")} Sq.Ft.</span>}
+          {property.parking && <span className={styles.detailItem}>{property.parking}</span>}
         </div>
 
-        {property.amenities.length > 0 && (
+        {property.amenities && property.amenities.length > 0 && (
           <div className={styles.amenities}>
             {property.amenities.slice(0, 3).map((a) => (
               <span key={a} className={styles.amenityTag}>{a}</span>
@@ -83,15 +84,14 @@ export default function RentPropertyCard({ property, viewMode }) {
 
         <div className={styles.cardFooter}>
           <div className={styles.priceBlock}>
-            <span className={styles.rentValue}>{formatRent(property.rent)}</span>
+            <span className={styles.rentValue}>{formatRent(property.rent || property.price)}</span>
             <span className={styles.rentLabel}>/month</span>
           </div>
-          <div className={styles.depositBlock}>
-            <span className={styles.depositLabel}>Deposit:</span>
-            <span className={styles.depositValue}>{formatRent(property.deposit)}</span>
-          </div>
+          <button className={styles.enquiryBtn} onClick={(e) => { e.stopPropagation(); setShowEnquiry(true); }}>Enquiry</button>
         </div>
       </div>
+
+      {showEnquiry && <EnquiryModal property={property} onClose={() => setShowEnquiry(false)} />}
     </article>
   );
 }

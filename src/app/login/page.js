@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "../context/AuthContext";
+import PasswordInput from "../components/PasswordInput";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import styles from "./auth.module.css";
@@ -51,6 +52,7 @@ export default function LoginPage() {
           </div>
 
           <form className={styles.authForm} onSubmit={handleSubmit}>
+            
             {error && <div className={styles.errorMsg}>{error}</div>}
 
             <div className={styles.formGroup}>
@@ -60,7 +62,7 @@ export default function LoginPage() {
 
             <div className={styles.formGroup}>
               <label className={styles.formLabel} htmlFor="login-password">Password</label>
-              <input id="login-password" name="password" type="password" className={styles.formInput} value={form.password} onChange={handleChange} placeholder="Enter password" />
+              <PasswordInput id="login-password" name="password" className={styles.formInput} value={form.password} onChange={handleChange} placeholder="Enter password" />
             </div>
 
             <Link href="/forgot-password" className={styles.forgotLink}>

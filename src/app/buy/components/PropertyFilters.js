@@ -14,10 +14,15 @@ const cityOptions = [
 ];
 
 const typeOptions = [
-  { value: "apartment", label: "Apartment" },
-  { value: "villa", label: "Villa / House" },
-  { value: "plot", label: "Plot / Land" },
-  { value: "commercial", label: "Commercial" },
+  { value: "Apartment", label: "Apartment" },
+  { value: "Villa", label: "Villa / House" },
+  { value: "Plot", label: "Plot / Land" },
+  { value: "Office", label: "Office" },
+  { value: "Shop", label: "Shop" },
+  { value: "Studio", label: "Studio" },
+  { value: "Penthouse", label: "Penthouse" },
+  { value: "Farmhouse", label: "Farmhouse" },
+  { value: "Other", label: "Other" },
 ];
 
 const bhkOptions = [
@@ -51,7 +56,7 @@ const postedByOptions = [
   { value: "builder", label: "Builder" },
 ];
 
-export default function PropertyFilters({ filters, onFilterChange, onClearFilters, resultCount }) {
+export default function PropertyFilters({ filters, onFilterChange, onApplyFilters, onClearFilters, resultCount }) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const hasActiveFilters = Object.values(filters).some((v) => Array.isArray(v) ? v.length > 0 : v !== "");
@@ -202,30 +207,12 @@ export default function PropertyFilters({ filters, onFilterChange, onClearFilter
             />
           </div>
 
-          {/* Posted By */}
-          <div className={styles.filterGroup}>
-            <label className={styles.filterLabel}>Posted By</label>
-            <div className={styles.chipGroup}>
-              {postedByOptions.map((opt) => (
-                <button
-                  key={opt.value}
-                  type="button"
-                  className={`${styles.chip} ${filters.postedBy === opt.value ? styles.chipActive : ""}`}
-                  onClick={() => onFilterChange("postedBy", filters.postedBy === opt.value ? "" : opt.value)}
-                >
-                  {opt.label}
-                </button>
-              ))}
-            </div>
-          </div>
         </div>
 
-        {/* Mobile apply button */}
+        {/* Sticky action bar */}
         <div className={styles.mobileApplyBar}>
-          <span className={styles.mobileResultCount}>{resultCount} Properties Found</span>
-          <button className={styles.applyBtn} onClick={() => setMobileOpen(false)}>
-            View Results
-          </button>
+          <button className={styles.clearAllBtn} onClick={onClearFilters}>Clear All</button>
+          <button className={styles.applyBtn} onClick={() => { onApplyFilters(); setMobileOpen(false); }}>Apply Filters</button>
         </div>
       </aside>
     </>

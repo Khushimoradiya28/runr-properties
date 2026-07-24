@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "../context/AuthContext";
+import PasswordInput from "../components/PasswordInput";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import styles from "../login/auth.module.css";
@@ -89,11 +90,11 @@ export default function SignupPage() {
             <div className={styles.formRow}>
               <div className={styles.formGroup}>
                 <label className={styles.formLabel} htmlFor="signup-password">Password</label>
-                <input id="signup-password" name="password" type="password" className={styles.formInput} value={form.password} onChange={handleChange} placeholder="Min 6 characters" />
+                <PasswordInput id="signup-password" name="password" className={styles.formInput} value={form.password} onChange={handleChange} placeholder="Min 6 characters" />
               </div>
               <div className={styles.formGroup}>
                 <label className={styles.formLabel} htmlFor="signup-confirm">Confirm Password</label>
-                <input id="signup-confirm" name="confirmPassword" type="password" className={styles.formInput} value={form.confirmPassword} onChange={handleChange} placeholder="Re-enter password" />
+                <PasswordInput id="signup-confirm" name="confirmPassword" className={styles.formInput} value={form.confirmPassword} onChange={handleChange} placeholder="Re-enter password" />
               </div>
             </div>
 

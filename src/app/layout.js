@@ -1,7 +1,9 @@
+import { Suspense } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
 import { AuthProvider } from "./context/AuthContext";
 import { WishlistProvider } from "./context/WishlistContext";
 import WishlistToast from "./components/WishlistToast";
+import GlobalLoader from "./components/GlobalLoader";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -29,6 +31,7 @@ export default function RootLayout({ children }) {
       <body suppressHydrationWarning>
         <AuthProvider>
           <WishlistProvider>
+            <Suspense fallback={null}><GlobalLoader /></Suspense>
             {children}
             <WishlistToast />
           </WishlistProvider>

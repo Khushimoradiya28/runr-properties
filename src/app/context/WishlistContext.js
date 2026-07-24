@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { showWishlistToast } from "../components/WishlistToast";
+import { getWishlist, addToWishlistAPI, removeFromWishlistAPI, clearWishlistAPI } from "../services/api";
 
 const WishlistContext = createContext(null);
 
@@ -10,33 +11,30 @@ export function WishlistProvider({ children }) {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem("runr_wishlist");
-      if (stored) {
-        setWishlist(JSON.parse(stored));
+    async function loadWishlist() {
+      const res = await getWishlist();
+      if (res.success && res.wishlist) {
+        setWishlist(res.wishlist);
+      } else if (res.success && res.data) {
+        setWishlist(res.data);
       }
-    } catch (e) {
-      // ignore
+      setLoaded(true);
     }
-    setLoaded(true);
+    loadWishlist();
   }, []);
 
-  useEffect(() => {
-    if (loaded) {
-      localStorage.setItem("runr_wishlist", JSON.stringify(wishlist));
-    }
-  }, [wishlist, loaded]);
-
-  const addToWishlist = useCallback((property) => {
+  const addToWishlist = useCallback(async (property) => {
     setWishlist((prev) => {
       if (prev.some((item) => item.id === property.id)) return prev;
       return [...prev, property];
     });
+    await addToWishlistAPI(property);
     setTimeout(() => showWishlistToast("Added to Wishlist", "added"), 0);
   }, []);
 
-  const removeFromWishlist = useCallback((propertyId) => {
+  const removeFromWishlist = useCallback(async (propertyId) => {
     setWishlist((prev) => prev.filter((item) => item.id !== propertyId));
+    await removeFromWishlistAPI(propertyId);
     setTimeout(() => showWishlistToast("Removed from Wishlist", "removed"), 0);
   }, []);
 
@@ -45,27 +43,22 @@ export function WishlistProvider({ children }) {
     [wishlist]
   );
 
-  const toggleWishlist = useCallback((property) => {
-    let action = "added";
-    setWishlist((prev) => {
-      const exists = prev.some((item) => item.id === property.id);
-      if (exists) {
-        action = "removed";
-        return prev.filter((item) => item.id !== property.id);
-      }
-      return [...prev, property];
-    });
-    setTimeout(() => {
-      if (action === "added") {
-        showWishlistToast("Added to Wishlist", "added");
-      } else {
-        showWishlistToast("Removed from Wishlist", "removed");
-      }
-    }, 0);
-  }, []);
+  const toggleWishlist = useCallback(async (property) => {
+    const exists = wishlist.some((item) => item.id === property.id);
+    if (exists) {
+      setWishlist((prev) => prev.filter((item) => item.id !== property.id));
+      await removeFromWishlistAPI(property.id);
+      setTimeout(() => showWishlistToast("Removed from Wishlist", "removed"), 0);
+    } else {
+      setWishlist((prev) => [...prev, property]);
+      await addToWishlistAPI(property);
+      setTimeout(() => showWishlistToast("Added to Wishlist", "added"), 0);
+    }
+  }, [wishlist]);
 
-  const clearWishlist = useCallback(() => {
+  const clearWishlist = useCallback(async () => {
     setWishlist([]);
+    await clearWishlistAPI();
     setTimeout(() => showWishlistToast("Wishlist cleared", "removed"), 0);
   }, []);
 

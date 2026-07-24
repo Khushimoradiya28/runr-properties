@@ -4,12 +4,12 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "../../context/AuthContext";
-import { getReceivedEnquiries, updateEnquiryStatus, deleteEnquiry } from "../../services/api";
+import { getMyEnquiries, deleteEnquiry } from "../../services/api";
 import { showWishlistToast } from "../../components/WishlistToast";
 import ConfirmModal from "../../components/ConfirmModal";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
-import styles from "../my-enquiries/myenquiries.module.css";
+import styles from "./myenquiries.module.css";
 
 function formatDate(val) {
   if (!val) return "—";
@@ -35,39 +35,26 @@ function getImage(prop) {
   return "/img/buy-properties/1.jpg";
 }
 
-export default function EnquiriesPage() {
+export default function MyEnquiriesPage() {
   const router = useRouter();
-  const { loading, isAuthenticated, isOwner } = useAuth();
+  const { loading, isAuthenticated } = useAuth();
   const [enquiries, setEnquiries] = useState([]);
   const [fetching, setFetching] = useState(true);
   const [deleteId, setDeleteId] = useState(null);
   const [deleting, setDeleting] = useState(false);
-  const [updatingId, setUpdatingId] = useState(null);
 
   useEffect(() => {
-    if (!loading && (!isAuthenticated || !isOwner)) router.push("/login");
-  }, [loading, isAuthenticated, isOwner, router]);
+    if (!loading && !isAuthenticated) router.push("/login");
+  }, [loading, isAuthenticated, router]);
 
   useEffect(() => {
     async function load() {
-      const res = await getReceivedEnquiries();
+      const res = await getMyEnquiries();
       if (res.success) setEnquiries(res.enquiries);
       setFetching(false);
     }
-    if (isAuthenticated && isOwner) load();
-  }, [isAuthenticated, isOwner]);
-
-  const handleStatusChange = async (enquiryId, status) => {
-    setUpdatingId(enquiryId);
-    const res = await updateEnquiryStatus(enquiryId, status);
-    setUpdatingId(null);
-    if (res.success) {
-      setEnquiries((p) => p.map((e) => e._id === enquiryId ? { ...e, status } : e));
-      showWishlistToast("Status updated.", "added");
-    } else {
-      showWishlistToast(res.message || "Failed to update.", "removed");
-    }
-  };
+    if (isAuthenticated) load();
+  }, [isAuthenticated]);
 
   const handleDelete = async () => {
     setDeleting(true);
@@ -90,15 +77,14 @@ export default function EnquiriesPage() {
       <main className={styles.main}>
         <div className={styles.backLink}><Link href="/profile">← Back to Dashboard</Link></div>
         <div className={styles.pageHeader}>
-          <h1 className={styles.pageTitle}>Received Enquiries</h1>
-          <p className={styles.pageSubtitle}>{enquiries.length} enquiries from buyers</p>
+          <h1 className={styles.pageTitle}>My Enquiries</h1>
+          <p className={styles.pageSubtitle}>{enquiries.length} enquiries sent</p>
         </div>
 
         {enquiries.length > 0 ? (
           <div className={styles.enquiryList}>
             {enquiries.map((enq) => {
               const prop = enq.property || {};
-              const buyer = enq.buyer || {};
               return (
                 <div key={enq._id} className={styles.enquiryCard}>
                   <div className={styles.cardImage}>
@@ -112,27 +98,14 @@ export default function EnquiriesPage() {
                       )}
                       {prop.price > 0 && <span className={styles.propPrice}>{formatPrice(prop.price)}</span>}
                     </div>
-                    <p className={styles.messageText}>
-                      <strong>{buyer.name || enq.name}:</strong> {enq.message}
-                    </p>
-                    <p className={styles.propLocation} style={{margin: "2px 0 0"}}>
-                      📞 {enq.mobile} &nbsp; ✉️ {enq.email}
-                    </p>
+                    <p className={styles.messageText}><strong>Message:</strong> {enq.message}</p>
                     <div className={styles.cardMeta}>
-                      <select
-                        value={enq.status || "Pending"}
-                        onChange={(e) => handleStatusChange(enq._id, e.target.value)}
-                        disabled={updatingId === enq._id}
-                        style={{padding:"4px 10px",borderRadius:"6px",border:"1px solid rgba(30,58,95,0.12)",fontSize:"0.75rem",fontWeight:600,cursor:"pointer"}}
-                      >
-                        <option value="Pending">Pending</option>
-                        <option value="Contacted">Contacted</option>
-                        <option value="Closed">Closed</option>
-                      </select>
-                      <span className={styles.dateText}>{formatDate(enq.createdAt)}</span>
+                      <span className={`${styles.statusBadge} ${styles[`status${enq.status || "Pending"}`]}`}>{enq.status || "Pending"}</span>
+                      <span className={styles.dateText}>Sent: {formatDate(enq.createdAt)}</span>
                     </div>
                   </div>
                   <div className={styles.cardActions}>
+                    {prop._id && <Link href={`/property/${prop._id}`} className={styles.viewBtn}>View</Link>}
                     <button className={styles.deleteBtn} onClick={() => setDeleteId(enq._id)}>Delete</button>
                   </div>
                 </div>
@@ -141,8 +114,9 @@ export default function EnquiriesPage() {
           </div>
         ) : (
           <div className={styles.empty}>
-            <h3>No enquiries yet</h3>
-            <p>When buyers enquire about your properties, they will appear here.</p>
+            <h3>No enquiries sent yet</h3>
+            <p>Browse properties and send enquiries to get started.</p>
+            <Link href="/buy" className={styles.browseBtn}>Browse Properties</Link>
           </div>
         )}
       </main>

@@ -1,11 +1,12 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { useWishlist } from "../../context/WishlistContext";
+import EnquiryModal from "../../components/EnquiryModal";
 import styles from "./city.module.css";
 
 const cityInfo = {
@@ -42,6 +43,7 @@ function formatPrice(price) {
 
 function PropertyCard({ property }) {
   const { isInWishlist, toggleWishlist } = useWishlist();
+  const [showEnquiry, setShowEnquiry] = useState(false);
   const liked = isInWishlist(property.id);
 
   return (
@@ -63,7 +65,9 @@ function PropertyCard({ property }) {
           <span>{property.area.toLocaleString("en-IN")} Sq.Ft.</span>
         </div>
         <p className={styles.cardPrice}>{formatPrice(property.price)}</p>
+        <button className={styles.enquiryBtn} onClick={() => setShowEnquiry(true)}>Enquiry</button>
       </div>
+      {showEnquiry && <EnquiryModal property={property} onClose={() => setShowEnquiry(false)} />}
     </article>
   );
 }

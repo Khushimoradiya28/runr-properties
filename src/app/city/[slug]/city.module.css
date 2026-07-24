@@ -44,3 +44,6 @@
 @media (max-width: 880px) { .main { width: calc(100vw - 40px); max-width: calc(100vw - 40px); } }
 @media (max-width: 640px) { .main { width: calc(100vw - 24px); max-width: calc(100vw - 24px); } .cardsGrid { grid-template-columns: 1fr; gap: 16px; } .cardImageWrap { height: 190px; } }
 @media (max-width: 400px) { .main { width: calc(100vw - 16px); max-width: calc(100vw - 16px); } }
+
+.enquiryBtn { padding: 8px 18px; border-radius: 10px; border: 1px solid rgba(63,166,107,0.2); background: #3fa66ba1; color: #166534; font-weight: 700; font-size: 0.78rem; cursor: pointer; transition: all 0.18s ease; margin-top: 10px; display: block; margin-left: auto;}
+.enquiryBtn:hover { background: #3fa66b; color: #ffffff; border-color: #3fa66b; }

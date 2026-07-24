@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import styles from "./MultiSelectDropdown.module.css";
 
-export default function MultiSelectDropdown({ label, options, selected, onChange, placeholder }) {
+export default function MultiSelectDropdown({ options, selected, onChange, placeholder }) {
   const [open, setOpen] = useState(false);
   const wrapRef = useRef(null);
 
@@ -56,11 +56,6 @@ export default function MultiSelectDropdown({ label, options, selected, onChange
               <span className={styles.optionLabel}>{opt.label}</span>
             </label>
           ))}
-          {selected.length > 0 && (
-            <button type="button" className={styles.clearSelection} onClick={() => onChange([])}>
-              Clear selection
-            </button>
-          )}
         </div>
       )}
     </div>
